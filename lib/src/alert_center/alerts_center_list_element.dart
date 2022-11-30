@@ -32,18 +32,84 @@ class _AlertCenterListElementState extends State<AlertCenterListElement> {
                   Colors.white54,
                   Colors.grey.shade100,
                   Colors.white54
-                ])),
+                ]),
+            border: Border(
+                left: BorderSide(
+                    color: Subroutines.getRiskColor(widget.item['riskScore']),
+                    width: 15))),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    Subroutines.getDate(widget.item['createdDate']),
+                    style: const TextStyle(color: Colors.black87),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.only(right: 20),
+                    child: Text(widget.item['title'],
+                        maxLines: 2,
+                        style: const TextStyle(
+                            color: Colors.black54,
+                            fontWeight: FontWeight.w500)),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              //width: 100,
+              constraints: const BoxConstraints(maxWidth: 120),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                color: Colors.blueGrey,
+              ),
+              padding: const EdgeInsets.fromLTRB(7, 4, 7, 4),
+              child: Text(widget.item['subCategory'] ?? '',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      fontSize: 12,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500)),
+            )
+          ],
+        ),
+      ),
+    );
+
+    // ignore: dead_code
+    return Container(
+      constraints: const BoxConstraints(minHeight: 70),
+      margin: const EdgeInsets.fromLTRB(10, 3, 10, 3),
+      decoration: BoxDecoration(
+          border: Border.all(width: 0.5, color: Colors.blueGrey.shade200)),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(10, 5, 15, 5),
+        decoration: BoxDecoration(
+            //color: Colors.white,
+            gradient: LinearGradient(
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                colors: [
+              Colors.white,
+              Colors.grey.shade100,
+              Colors.white54,
+              Colors.grey.shade100,
+              Colors.white54
+            ])),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              margin: const EdgeInsets.fromLTRB(5, 5, 15, 5),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
-                color: Subroutines.getRiskColor(widget.item['riskScore'])
-              ),
-              padding: const EdgeInsets.all(10),
-              child: const Icon(FontAwesomeIcons.bell, color: Colors.white, size: 23)),
+                margin: const EdgeInsets.fromLTRB(5, 5, 15, 5),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    color: Subroutines.getRiskColor(widget.item['riskScore'])),
+                padding: const EdgeInsets.all(10),
+                child: const Icon(FontAwesomeIcons.bell,
+                    color: Colors.white, size: 23)),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,9 +148,6 @@ class _AlertCenterListElementState extends State<AlertCenterListElement> {
         ),
       ),
     );
-    
-
-    // ignore: dead_code
     return Container(
       constraints: const BoxConstraints(minHeight: 60),
       margin: const EdgeInsets.fromLTRB(10, 3, 10, 3),
@@ -243,70 +306,6 @@ class _AlertCenterListElementState extends State<AlertCenterListElement> {
                   maxLines: 2,
                   style: const TextStyle(
                       color: Colors.black54, fontWeight: FontWeight.w500)),
-            )
-          ],
-        ),
-      ),
-    );
-    return Container(
-      constraints: const BoxConstraints(minHeight: 70),
-      margin: const EdgeInsets.fromLTRB(10, 3, 10, 3),
-      decoration: BoxDecoration(
-          border: Border.all(width: 0.5, color: Colors.blueGrey.shade200)),
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(10, 5, 15, 5),
-        decoration: BoxDecoration(
-            //color: Colors.white,
-            gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: [
-                  Colors.white,
-                  Colors.grey.shade100,
-                  Colors.white54,
-                  Colors.grey.shade100,
-                  Colors.white54
-                ]),
-            border: Border(
-                left: BorderSide(
-                    color: Subroutines.getRiskColor(widget.item['riskScore']),
-                    width: 15))),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    Subroutines.getDate(widget.item['createdDate']),
-                    style: const TextStyle(color: Colors.black87),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(right: 20),
-                    child: Text(widget.item['title'],
-                        maxLines: 2,
-                        style: const TextStyle(
-                            color: Colors.black54,
-                            fontWeight: FontWeight.w500)),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              //width: 100,
-              constraints: const BoxConstraints(maxWidth: 120),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
-                color: Colors.blueGrey,
-              ),
-              padding: const EdgeInsets.fromLTRB(7, 4, 7, 4),
-              child: Text(widget.item['subCategory'] ?? '',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                      fontSize: 12,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500)),
             )
           ],
         ),
