@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:convert';
 import 'package:decyfir/src/common/shared_prefs_handler.dart';
@@ -27,15 +26,18 @@ class Subroutines {
     return '$apiPrefix/api/$path';
   }
 
-  static Future<http.Response> login(String username, String password) async {
-    Map<String, String> payload = {
-      "username": username,
-      "password": password
-    };
+  static Future<http.Response> login(String username, String password,
+      {token}) async {
+    Map<String, String> payload = {"username": username, "password": password};
+    if (token == null) {
+      payload = {"username": username, "password": password};
+    } else {
+      payload = {"username": username, "password": password, 'token': token};
+    }
     Uri path = Uri.https(
         Values.PREFIXES[Values.CURRENT_BUILD] + _returnBaseUrl(),
         buildUrl(Values.API_PATHS['login'].toString()));
-   print('Logging in at path: $path with ${payload.toString()}');
+    print('Logging in at path: $path with ${payload.toString()}');
     return http
         .post(path,
             headers: {
@@ -44,11 +46,11 @@ class Subroutines {
             },
             body: jsonEncode(payload))
         .catchError((onError) {
-    //  print(onError.toString());
+      //  print(onError.toString());
     });
   }
 
-  //qadecyfir.cyfirma.com/api/account
+  //qadecyfir.cyfirma.com/api/account - Not Used
 
   static Future<http.Response> getAccountData(String token) async {
     Uri path = Uri.https(
@@ -58,55 +60,103 @@ class Subroutines {
     return _getCall(token, path);
   }
 
-  //qadecyfir.cyfirma.com/core/api/online-reports/dasboard/list?reportType=Early%20Warnings&page=0&size=20&orgId=1
-  static Future<http.Response> getEarlyWarning(String token) async {
+  //qadecyfir.cyfirma.com/org/api/org-users/loginId?loginId=mobiletestuser@cyfirma.com
+
+  static Future<http.Response> getOrgUserData(String token, String username) {
     Uri path = Uri.https(
-      Values.PREFIXES[Values.CURRENT_BUILD] + _returnBaseUrl(),
-      buildUrl(Values.API_PATHS['online_report_list'].toString()), {
-        "reportType" : "Early Warnings",
-        "orgId" : '1',
-        "page" : "0",
-        "size" : '20',
-      }
-    );
+        Values.PREFIXES[Values.CURRENT_BUILD] + _returnBaseUrl(),
+        buildUrl(Values.API_PATHS['org_user_data'].toString()),
+        {"loginId": username});
+    print('Getting Account data from path: $path');
+    return _getCall(token, path);
+  }
+
+  //qadecyfir.cyfirma.com/core/api/online-reports/dasboard/list?reportType=Early%20Warnings&page=0&size=20&orgId=1
+  static Future<http.Response> getEarlyWarning(
+      String token, String orgId) async {
+    Uri path = Uri.https(
+        Values.PREFIXES[Values.CURRENT_BUILD] + _returnBaseUrl(),
+        buildUrl(Values.API_PATHS['online_report_list'].toString()), {
+      "reportType": "Early Warnings",
+      "orgId": orgId,
+      "page": "0",
+      "size": '20',
+    });
+    //print(path.toString());
+    return _getCall(token, path);
+  }
+
+  static Future<http.Response> getEarlyWarningForNotifications(
+      String token, String orgId) async {
+    Uri path = Uri.https(
+        Values.PREFIXES[Values.CURRENT_BUILD] + _returnBaseUrl(),
+        buildUrl(Values.API_PATHS['online_report_list'].toString()), {
+      "reportType": "Early Warnings",
+      "orgId": orgId,
+      "page": "0",
+      "size": '40',
+      "fromDate":
+          (DateTime.now().millisecondsSinceEpoch - (86400 * 1000)).toString(),
+      "toDate": DateTime.now().millisecondsSinceEpoch.toString()
+    });
     //print(path.toString());
     return _getCall(token, path);
   }
 
   //alerts/v2/listing?orgId=1&alertType=AttackSurface&size=20&page=0&sort=createdDate,DESC
-  static Future<http.Response> getLatestAlerts(String token, String alertType, bool sort) async {
+  static Future<http.Response> getLatestAlerts(
+      String token, String alertType, bool sort, String orgId,
+      {size}) async {
     String sortDir = sort ? 'ASC' : 'DESC';
     Uri path = Uri.https(
-      Values.PREFIXES[Values.CURRENT_BUILD] + _returnBaseUrl(),
-      buildUrl(Values.API_PATHS['latest_alerts'].toString()), {
-        "orgId" : '1',
-        "alertType" : alertType,
-        "size" : '40',
-        "sort" : "createdDate,$sortDir"
-      }
-    );
+        Values.PREFIXES[Values.CURRENT_BUILD] + _returnBaseUrl(),
+        buildUrl(Values.API_PATHS['latest_alerts'].toString()), {
+      "orgId": orgId,
+      "alertType": alertType,
+      "size": size ?? '40',
+      "sort": "createdDate,$sortDir"
+    });
+    print(path);
+    return _getCall(token, path);
+  }
+
+  static Future<http.Response> getLatestAlertsForNotification(
+      String token, bool sort, String orgId) async {
+    String sortDir = sort ? 'ASC' : 'DESC';
+    Uri path = Uri.https(
+        Values.PREFIXES[Values.CURRENT_BUILD] + _returnBaseUrl(),
+        buildUrl(Values.API_PATHS['latest_alerts'].toString()), {
+      "orgId": orgId,
+      "alertType": null.toString(),
+      "size": '40',
+      "sort": "createdDate,$sortDir",
+      "fromDate":
+          (DateTime.now().millisecondsSinceEpoch - (86400 * 1000)).toString(),
+      "toDate": DateTime.now().millisecondsSinceEpoch.toString()
+    });
+    //print("Calling latest alerts on path: $path");
     return _getCall(token, path);
   }
 
   static Future<http.Response> _getCall(String token, Uri path) async {
     //NetworkHandler.isOnlineWithToast();
-    //print(token);
-    return http.get(
-      path,
-      headers: {
-        "Accept": "application/json",
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token'
-      },
-    ).catchError((onError) {
-      //print(onError.toString());
-    }).then((http.Response res){
-      if(res.statusCode == 401){
-        //sheetNotifier.value = 97;
-        //sheetNotifier.notifyListeners();
-      }
-      return res;
-    });
+    return http
+        .get(
+          path,
+          headers: {
+            "Accept": "application/json",
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token'
+          },
+        )
+        .catchError((onError) {})
+        .then((http.Response res) {
+          if (res.statusCode == 401) {
+            //sheetNotifier.value = 97;
+            //sheetNotifier.notifyListeners();
+          }
+          return res;
+        });
   }
 
   static String _returnBaseUrl() {
@@ -114,11 +164,11 @@ class Subroutines {
   }
 
   static String getRiskLevel(int value) {
-    if(value > Values.CRITICAL_THRESHOLD) {
+    if (value > Values.CRITICAL_THRESHOLD) {
       return 'Critical';
-    } else if(value > Values.HIGH_THRESHOLD) {
+    } else if (value > Values.HIGH_THRESHOLD) {
       return 'High';
-    } else if(value > Values.MEDIUM_THRESHOLD) {
+    } else if (value > Values.MEDIUM_THRESHOLD) {
       return 'Medium';
     } else {
       return 'Low';
@@ -129,53 +179,64 @@ class Subroutines {
     List outList = [];
     List<String> riskLevelsSelected = ["Critical", "High", "Medium"];
     for (var e in input) {
-      if(e['riskScore'] > Values.MEDIUM_THRESHOLD && riskLevelsSelected.contains(getRiskLevel(e['riskScore']))) outList.add(e);
+      if (e['riskScore'] > Values.MEDIUM_THRESHOLD &&
+          riskLevelsSelected.contains(getRiskLevel(e['riskScore'])))
+        outList.add(e);
     }
     return outList;
   }
 
   static List filterActive(List input, List<bool> active) {
     List outList = [];
-    for(var e in input) {
-      if(active[0] && e['riskScore'] > Values.CRITICAL_THRESHOLD) outList.add(e);
-      else if(active[1] && e['riskScore'] > Values.HIGH_THRESHOLD && e['riskScore'] <= Values.CRITICAL_THRESHOLD) outList.add(e);
-      else if(active[2] && e['riskScore'] > Values.MEDIUM_THRESHOLD && e['riskScore'] <= Values.HIGH_THRESHOLD) outList.add(e);
+    for (var e in input) {
+      if (active[0] && e['riskScore'] > Values.CRITICAL_THRESHOLD)
+        outList.add(e);
+      else if (active[1] &&
+          e['riskScore'] > Values.HIGH_THRESHOLD &&
+          e['riskScore'] <= Values.CRITICAL_THRESHOLD)
+        outList.add(e);
+      else if (active[2] &&
+          e['riskScore'] > Values.MEDIUM_THRESHOLD &&
+          e['riskScore'] <= Values.HIGH_THRESHOLD) outList.add(e);
     }
     return outList;
   }
 
-  static List filterCategories(List input, String category, String subCategory) {
+  static List filterCategories(
+      List input, String category, String subCategory) {
     List outList = [];
-    for(var e in input) {
-      if(category.toUpperCase() == e['type'].toUpperCase()) {
-        if(subCategory.toUpperCase() == e['category'].toUpperCase()) {
+    for (var e in input) {
+      if (category.toUpperCase() == e['type'].toUpperCase()) {
+        if (subCategory.toUpperCase() == e['category'].toUpperCase()) {
           outList.add(e);
         }
-      } else if(category == '' && subCategory == '') {
+      } else if (category == '' && subCategory == '') {
         outList = input;
       }
-    } 
-    
+    }
+
     //return input;
     return outList;
   }
 
   static List<int> generateCounts(List input) {
     List<int> outCounts = [0, 0, 0];
-    for(var e in input) {
-      if(e['riskScore'] > Values.CRITICAL_THRESHOLD) outCounts[0]++;
-      else if(e['riskScore'] > Values.HIGH_THRESHOLD) outCounts[1]++;
-      else if(e['riskScore'] > Values.MEDIUM_THRESHOLD) outCounts[2]++;
+    for (var e in input) {
+      if (e['riskScore'] > Values.CRITICAL_THRESHOLD)
+        outCounts[0]++;
+      else if (e['riskScore'] > Values.HIGH_THRESHOLD)
+        outCounts[1]++;
+      else if (e['riskScore'] > Values.MEDIUM_THRESHOLD) outCounts[2]++;
     }
     return outCounts;
   }
 
-  static Color getRiskColor (int value) {
-    if(value > Values.CRITICAL_THRESHOLD) {
+  static Color getRiskColor(int value) {
+    if (value > Values.CRITICAL_THRESHOLD) {
       return const Color(0xFFCE1126);
-    } else if(value > Values.HIGH_THRESHOLD) {
+    } else if (value > Values.HIGH_THRESHOLD) {
       return const Color(0xFFFF8000);
-    } else if(value > Values.MEDIUM_THRESHOLD) {
+    } else if (value > Values.MEDIUM_THRESHOLD) {
       return const Color(0xFFFDB71B);
     } else {
       return const Color(0xFF0F7DC2);
@@ -281,61 +342,65 @@ class Subroutines {
   }
 
   static void getNotification(FlutterLocalNotificationsPlugin plugin) async {
-    SharedPreferencesHandler().getString('authToken').then((value)  => generateListAndShowNotification(value, plugin));
+    SharedPreferencesHandler()
+        .getString('authToken')
+        .then((value) => generateListAndShowNotification(value, plugin));
   }
 
-  static void generateListAndShowNotification(String token, FlutterLocalNotificationsPlugin plugin) async {
-    var alertsResp = await Subroutines.getLatestAlerts(token, "DigitalRisk", false);
+  static void generateListAndShowNotification(
+      String token, FlutterLocalNotificationsPlugin plugin) async {
     var alertsData = [];
     List alerts = [];
-    if(alertsResp.statusCode == 200) {
-      alertsData = json.decode(alertsResp.body)['Alerts'];
-      for(var e in alertsData) {
-        if(e['riskScore'] > 8) alerts.add(e);
+    SharedPreferencesHandler().getString('authToken').then((token) async {
+      if (token != '') {
+        SharedPreferencesHandler().getString('username').then((value) async {
+          if (value != null) {
+            var response = await Subroutines.getOrgUserData(token, value);
+            switch (response.statusCode) {
+              case 200:
+                var userData = json.decode(response.body);
+                if (userData != null) {
+                  var alertsResp =
+                      await Subroutines.getLatestAlertsForNotification(
+                          token, false, userData['orgId'].toString());
+
+                  if (alertsResp.statusCode == 200) {
+                    alertsData = json.decode(alertsResp.body)['Alerts'];
+                    for (var e in alertsData) {
+                      if (e['riskScore'] > 8) alerts.add(e);
+                    }
+                  }
+                  alertsResp =
+                      await Subroutines.getEarlyWarningForNotifications(
+                          token, userData['orgId'].toString());
+                  if (alertsResp.statusCode == 200) {
+                    alertsData = json.decode(alertsResp.body);
+                    for (var e in alertsData) {
+                      if (e['riskScore'] > 8) alerts.add(e);
+                    }
+                  }
+                  if (alerts.isNotEmpty) {
+                    int index = 0;
+                    for (var e in alerts) {
+                      index++;
+                      String date = Subroutines.getDate(e['createdDate']);
+                      //String title = '$date - ${e['title']}';
+                      String title = e['title'] ?? e['reportName'];
+                      bool isAlert = e['title'] != null ? true : false;
+                      await plugin.show(
+                          index, date, title, Values.notificationDetails,
+                          payload: isAlert.toString());
+                      //await plugin.show(index, title, e['description'], Values.notificationDetails,payload: 'item x');
+                    }
+                  }
+                }
+                break;
+              default:
+            }
+          }
+        });
       }
-    }
-    alertsResp = await Subroutines.getLatestAlerts(token, "AttackSurface", false);
-    if(alertsResp.statusCode == 200) {
-      alertsData = json.decode(alertsResp.body)['Alerts'];
-      for(var e in alertsData) {
-        if(e['riskScore'] > 8) alerts.add(e);
-      }
-    }
-    alertsResp = await Subroutines.getLatestAlerts(token, "Vulnerability", false);
-    if(alertsResp.statusCode == 200) {
-      alertsData = json.decode(alertsResp.body)['Alerts'];
-      for(var e in alertsData) {
-        if(e['riskScore'] > 8) alerts.add(e);
-      }
-    }
-    alertsResp = await Subroutines.getEarlyWarning(token);
-    if(alertsResp.statusCode == 200) {
-      alertsData = json.decode(alertsResp.body);
-      print('Came to early warnings');
-      for(var e in alertsData) {
-        if(e['riskScore'] > 8) alerts.add(e);
-      }
-    }
-    // if(alerts.isNotEmpty) {
-    //   String date = Subroutines.getDate(alerts[0]['createdDate']);
-    //   String title = '$date - ${alerts[0]['title']}';
-    //   await plugin.show(0, title, alerts[0]['description'], Values.notificationDetails, payload: 'item x');
-    // };
-    if(alerts.isNotEmpty) {
-      int index = 0;
-      for(var e in alerts) {
-        index++;
-        String date = Subroutines.getDate(e['createdDate']);
-        //String title = '$date - ${e['title']}';
-        String title = e['title'] ?? e['reportName'];
-        bool isAlert = e['title'] != null ? true : false;
-        // if(date == getDate(DateTime.now().toString())) {
-        //   await plugin.show(index, title, e['description'], Values.notificationDetails,payload: isAlert.toString());
-        // }
-        await plugin.show(index, date, title, Values.notificationDetails,payload: isAlert.toString());
-        //await plugin.show(index, title, e['description'], Values.notificationDetails,payload: 'item x');
-      }
-    }
+    });
   }
 }
 
@@ -352,12 +417,13 @@ class Values {
   static const int MEDIUM_THRESHOLD = 2;
 
   static const AndroidNotificationDetails androidNotificationDetails =
-    AndroidNotificationDetails('your channel id', 'your channel name',
-        channelDescription: 'your channel description',
-        importance: Importance.max,
-        priority: Priority.high,
-        ticker: 'ticker');
-  static const NotificationDetails notificationDetails = NotificationDetails(android: Values.androidNotificationDetails);
+      AndroidNotificationDetails('your channel id', 'your channel name',
+          channelDescription: 'your channel description',
+          importance: Importance.max,
+          priority: Priority.high,
+          ticker: 'ticker');
+  static const NotificationDetails notificationDetails =
+      NotificationDetails(android: Values.androidNotificationDetails);
 
   static const CORE = [
     "countries/list",
@@ -365,12 +431,10 @@ class Values {
     "defnce/sa/cyber-attack",
     'defnce/sa/phishing',
     "defnce/user-views",
-
-
     "online-reports/dasboard/list",
     "alerts/v2/listing"
   ];
-  static const ORG = ["industries"];
+  static const ORG = ["industries", "org-users/loginId"];
   static const CYBEREDU = ["version"];
   static const Map<String, String> API_PATHS = {
     "data_leak": "defnce/dr/dataleak",
@@ -390,10 +454,10 @@ class Values {
     'phishing': 'defnce/sa/phishing',
     "update_viewed": "defnce/user-views",
     "version": "app-versions/platform",
-
     "account": "account",
     "login": "authenticate",
-    "online_report_list" : "online-reports/dasboard/list",
-    "latest_alerts" : "alerts/v2/listing"
+    "online_report_list": "online-reports/dasboard/list",
+    "latest_alerts": "alerts/v2/listing",
+    "org_user_data": "org-users/loginId"
   };
 }

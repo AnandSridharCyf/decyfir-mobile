@@ -1,14 +1,30 @@
 import 'package:decyfir/src/authentication/login.dart';
+import 'package:decyfir/src/common/shared_prefs_handler.dart';
+import 'package:decyfir/src/profile.dart';
 import 'package:decyfir/src/settings/settings_view.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class DecyfirDrawer extends StatelessWidget {
+class DecyfirDrawer extends StatefulWidget {
 
   const DecyfirDrawer({super.key, required this.organisation, required this.orgEmail});
 
   final String organisation;
   final String orgEmail;
+
+  @override
+  State<DecyfirDrawer> createState() => _DecyfirDrawerState();
+}
+
+class _DecyfirDrawerState extends State<DecyfirDrawer> {
+  String firstName = '', lastName = '', email = '', orgName = '', timeZone = '', phone = '', createdDate = '';
+
+  @override
+  void initState() {
+    super.initState();
+    SharedPreferencesHandler().getString('orgName').then((value) => setState(() => orgName = value));
+    SharedPreferencesHandler().getString('username').then((value) => setState(() => email = value));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +51,7 @@ class DecyfirDrawer extends StatelessWidget {
                   ),
                   text: 'Organization: '
                 ),
-                TextSpan(text: organisation)
+                TextSpan(text: orgName)
               ]
             )),
             //accountName: Text('Organisation: $organisation'),
@@ -49,7 +65,7 @@ class DecyfirDrawer extends StatelessWidget {
                   ),
                   text: 'Email: '
                 ),
-                TextSpan(text: orgEmail)
+                TextSpan(text: email)
               ]
             )),
             currentAccountPictureSize: const Size.square(60),
@@ -72,7 +88,7 @@ class DecyfirDrawer extends StatelessWidget {
             ],*/
           ),
           ListTile(
-            //onTap: () => Navigator.restorablePushNamed(context, SettingsView.routeName),
+            onTap: () => Navigator.restorablePushNamed(context, Profile.routeName),
             leading: Icon(Icons.person_sharp, color: Theme.of(context).colorScheme.primary, size: 34),
             title: Text('Profile', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.primary)),
             subtitle: const Text('View your user profile'),
@@ -123,5 +139,4 @@ class DecyfirDrawer extends StatelessWidget {
       ),
     );
   }
-
 }

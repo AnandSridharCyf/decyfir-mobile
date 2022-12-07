@@ -45,4 +45,14 @@ class SharedPreferencesHandler {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.remove(key);
   }
+
+  Future<bool> setStringList(String key, List<String> list) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setStringList(key, list);
+  }
+
+  Future<bool> removeStringList(String key) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.remove(key);
+  }
 }

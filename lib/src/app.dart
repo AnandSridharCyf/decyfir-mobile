@@ -1,6 +1,7 @@
 import 'package:decyfir/src/alert_center/alert_center_latest_alerts.dart';
 import 'package:decyfir/src/alert_center/alert_center_list.dart';
 import 'package:decyfir/src/common/constants.dart';
+import 'package:decyfir/src/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -65,11 +66,8 @@ class MyApp extends StatelessWidget {
             colorScheme: Constants.lightScheme,
             //primaryColor: const Color(0xFF37474F)
           ),
-          darkTheme: ThemeData(
-            colorScheme: Constants.darkScheme
-          ),
+          darkTheme: ThemeData(colorScheme: Constants.darkScheme),
           themeMode: settingsController.themeMode,
-          
 
           // Define a function to handle named routes in order to support
           // Flutter web url navigation and deep linking.
@@ -83,13 +81,15 @@ class MyApp extends StatelessWidget {
                   case AlertCenterDetailsView.routeName:
                     return const AlertCenterDetailsView();
                   case AlertCenter.routeName:
-                    return const AlertCenter();
+                    return const AlertCenter(username: '');
                   case Login.routeName:
                     return const Login();
                   case AlertCenterList.routeName:
                     return const AlertCenterList();
                   case AlertCenterLatestAlerts.routeName:
                     return const AlertCenterLatestAlerts();
+                  case Profile.routeName:
+                    return const Profile();
                   default:
                     return const Login();
                 }

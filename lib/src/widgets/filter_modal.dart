@@ -1,18 +1,16 @@
 import 'package:decyfir/src/common/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class FilterModal extends StatefulWidget {
   final BuildContext context;
   final Function setModalCategory;
+  final List data;
 
-  const FilterModal(this.context, this.setModalCategory, {super.key});
+  const FilterModal(this.context, this.setModalCategory, {super.key, required this.data});
 
   @override
   State<FilterModal> createState() => _FilterModalState();
 }
-
-
 
 class _FilterModalState extends State<FilterModal> {
   bool isStageOne = true;
