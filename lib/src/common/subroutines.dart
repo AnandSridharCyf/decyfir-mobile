@@ -103,20 +103,26 @@ class Subroutines {
     return _getCall(token, path);
   }
 
-  //alerts/v2/listing?orgId=1&alertType=AttackSurface&size=20&page=0&sort=createdDate,DESC
+  //alerts/v2/listing?orgId=1&alertType=AttackSurface&size=20&page=0&sort=createdDate,DESC&riskScores=5,6,7,8,9,10
   static Future<http.Response> getLatestAlerts(
       String token, String alertType, bool sort, String orgId,
       {size}) async {
     String sortDir = sort ? 'ASC' : 'DESC';
+    var payload = {
+      "orgId": orgId,
+      "size": size ?? '40',
+      "sort": "createdDate,$sortDir",
+      "riskScores": "5,6,7,8,9,10,"
+    };
+    if(alertType != '') payload['alertType'] = alertType;
+    print(payload);
+
     Uri path = Uri.https(
         Values.PREFIXES[Values.CURRENT_BUILD] + _returnBaseUrl(),
-        buildUrl(Values.API_PATHS['latest_alerts'].toString()), {
-      "orgId": orgId,
-      "alertType": alertType,
-      "size": size ?? '40',
-      "sort": "createdDate,$sortDir"
-    });
+        buildUrl(Values.API_PATHS['latest_alerts'].toString()), payload);
     print(path);
+
+
     return _getCall(token, path);
   }
 
@@ -207,9 +213,13 @@ class Subroutines {
     List outList = [];
     for (var e in input) {
       if (category.toUpperCase() == e['type'].toUpperCase()) {
-        if (subCategory.toUpperCase() == e['category'].toUpperCase()) {
-          outList.add(e);
-        }
+        // With Stage Two
+        // if (subCategory.toUpperCase() == e['category'].toUpperCase()) {
+        //   outList.add(e);
+        // }
+
+        // Only Stage one
+        outList.add(e);
       } else if (category == '' && subCategory == '') {
         outList = input;
       }

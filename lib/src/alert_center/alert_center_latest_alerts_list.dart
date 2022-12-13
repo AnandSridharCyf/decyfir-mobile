@@ -25,7 +25,7 @@ class _AlertCenterLatestAlertsListState
   List<String> riskLevelsSelected = ["Critical", "High", "Medium"];
   List<bool> riskLevelActive = [true, false, false];
   List<int> riskLevelCounts = [0, 0, 0];
-  String category = '', subCategory = '';
+  String category = '', subCategory = '', apiAlias = '';
   bool loading = true;
 
   @override
@@ -43,7 +43,7 @@ class _AlertCenterLatestAlertsListState
 
     SharedPreferencesHandler().getString('orgId').then((value) async {
       var alertResp = await Subroutines.getLatestAlerts(
-          token, null.toString(), false, value);
+          token, apiAlias, false, value);
       if (alertResp.statusCode == 200) {
         setState(() {
           _alertsData = json.decode(alertResp.body)['Alerts'];
@@ -59,11 +59,14 @@ class _AlertCenterLatestAlertsListState
     return outList;
   }
 
-  void setModalCategory(String category, String subCategory) {
+  void setModalCategory(String category, String subCategory, String apiAlias) {
     setState(() {
       this.category = category;
       this.subCategory = subCategory;
-
+      this.apiAlias = apiAlias;
+      SharedPreferencesHandler()
+        .getString('authToken')
+        .then((value) => _getLatestAlerts(value));
       print('Setting $category | $subCategory');
     });
   }
@@ -135,8 +138,7 @@ class _AlertCenterLatestAlertsListState
           ),
           Container(
             padding: const EdgeInsets.fromLTRB(10, 0, 10, 15),
-            child:
-                const Text('Find information related to your attack surface'),
+            child:category != ''? Text('Showing your alerts for $category') : const Text('Showing all your alerts'),
           ),
           Container(
             padding: const EdgeInsets.fromLTRB(10, 0, 10, 15),
@@ -182,8 +184,11 @@ class _AlertCenterLatestAlertsListState
                   height: MediaQuery.of(context).size.height - 320,
                   child: SingleChildScrollView(
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      for (var item in finalList)
+                      
+                      if(finalList.isEmpty) const Center(child: Text('No alerts in this category')),
+                      if(finalList.isNotEmpty) for (var item in finalList)
                         AlertCenterListElement(item: item)
                     ],
                   )),

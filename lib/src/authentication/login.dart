@@ -31,13 +31,17 @@ class _LoginState extends State<Login> {
         Subroutines.getNotification(
             await NotificationSetup.getNotificationPlugin());
         // ignore: use_build_context_synchronously
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AlertCenter(username: _username)));
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AlertCenter(username: _username)));
       }
     });
   }
 
   void _performLoginWithToken(context) async {
-    dynamic response = await Subroutines.login(_username, _password, token: _authToken);
+    dynamic response =
+        await Subroutines.login(_username, _password, token: _authToken);
     switch (response.statusCode) {
       case 200:
         //final res = json.decode(response.body);
@@ -46,7 +50,10 @@ class _LoginState extends State<Login> {
             .then((value) async {
           Subroutines.getNotification(
               await NotificationSetup.getNotificationPlugin());
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AlertCenter(username: _username)));
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => AlertCenter(username: _username)));
         });
         break;
       default:
@@ -138,11 +145,14 @@ class _LoginState extends State<Login> {
     SharedPreferencesHandler().setString('username', _username);
     SharedPreferencesHandler()
         .setString('authToken', json.decode(response.body)['id_token'])
-        .then((value) async {      
+        .then((value) async {
       Subroutines.getNotification(
           await NotificationSetup.getNotificationPlugin());
       // ignore: use_build_context_synchronously
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AlertCenter(username: _username)));
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => AlertCenter(username: _username)));
     });
   }
 

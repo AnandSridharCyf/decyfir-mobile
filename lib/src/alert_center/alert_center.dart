@@ -58,6 +58,8 @@ class _AlertCenterState extends State<AlertCenter> {
                       .setString('orgId', userData['orgId'].toString());
                   SharedPreferencesHandler()
                       .setString('orgName', userData['orgName']);
+                      SharedPreferencesHandler()
+                      .setString('email', userData['email']);
                   SharedPreferencesHandler()
                       .setString('firstName', userData['firstname']);
                   SharedPreferencesHandler()

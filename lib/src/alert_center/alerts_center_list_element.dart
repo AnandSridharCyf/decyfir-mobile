@@ -92,7 +92,7 @@ class _AlertCenterListElementState extends State<AlertCenterListElement> {
                     padding: const EdgeInsets.fromLTRB(0, 3, 15, 7),
                     //Design 1
                     //padding: const EdgeInsets.fromLTRB(0, 5, 15, 10),
-                    child: Text(widget.item['title'],
+                    child: Text(widget.item['title'] ?? '',
                         maxLines: 2,
                         style: const TextStyle(
                             color: Colors.black54, fontWeight: FontWeight.w500)),
@@ -106,9 +106,14 @@ class _AlertCenterListElementState extends State<AlertCenterListElement> {
             decoration: BoxDecoration(
               color: Colors.white54
             ),
-            height: isExpanded ? 30*countLines.toDouble() : 0,
+            height: isExpanded ? 30*countLines.toDouble() + 50 : 0,
             duration: const Duration(milliseconds: 400),
-            child: Html(data: description),
+            child: Column(
+              children: [
+                Text(widget.item['category']),
+                Html(data: description),
+              ],
+            ),
           )
         ],
       ),

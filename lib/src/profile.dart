@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:decyfir/src/common/shared_prefs_handler.dart';
 import 'package:flutter/material.dart';
 
 class Profile extends StatefulWidget {
@@ -12,6 +13,67 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  String firstName = '',
+      lastName = '',
+      email = '',
+      orgName = '',
+      timeZone = '',
+      phone = '',
+      createdDate = '';
+
+  @override
+  void initState() {
+    SharedPreferencesHandler()
+        .getString('firstName')
+        .then((value) => setState(() => firstName = value));
+    SharedPreferencesHandler()
+        .getString('lastName')
+        .then((value) => setState(() => lastName = value));
+    SharedPreferencesHandler()
+        .getString('email')
+        .then((value) => setState(() => email = value));
+    SharedPreferencesHandler()
+        .getString('timeZone')
+        .then((value) => setState(() => timeZone = value));
+    SharedPreferencesHandler()
+        .getString('phone')
+        .then((value) => setState(() => phone = value));
+    super.initState();
+  }
+
+  Widget createProfileElement(IconData icon, String label) => Container(
+        padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
+        margin: const EdgeInsets.fromLTRB(30, 20, 30, 0),
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.bottomLeft,
+                end: Alignment.topRight,
+                colors: [
+                  Colors.white,
+                  Colors.indigo.shade50,
+                  Colors.white,
+                ]),
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            border: Border.all(color: Colors.black12, width: 0.5)),
+        child: Row(
+          children: [
+            Container(
+                padding: const EdgeInsets.fromLTRB(5, 15, 15, 15),
+                child: Icon(
+                  icon,
+                  color: Colors.blueGrey,
+                  size: 35,
+                )),
+            const SizedBox(width: 5),
+            Expanded(
+                child: Text(
+              label,
+              style: const TextStyle(fontSize: 16),
+            )),
+          ],
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -22,23 +84,29 @@ class _ProfileState extends State<Profile> {
             children: [
               Container(
                 width: MediaQuery.of(context).size.width,
-                height: 140,
+                height: 133,
                 decoration: BoxDecoration(
-                    gradient: RadialGradient(radius: 5, colors: [
-                  Colors.blueGrey,
-                  Colors.blueGrey.shade600,
-                  Colors.white
-                ])),
+                   //color: Colors.white,
+                   color: Theme.of(context).colorScheme.background,
+                //     gradient: RadialGradient(radius: 5, colors: [
+                //   Colors.blueGrey,
+                //   Colors.blueGrey.shade600,
+                //   Colors.white
+                // ])
+                ),
               ),
               Container(
-                padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+                padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      color: Colors.transparent,
-                      child: const Icon(Icons.arrow_back,
-                          size: 25, color: Colors.white),
+                    GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: Container(
+                        color: Colors.transparent,
+                        child: const Icon(Icons.arrow_back,
+                            size: 25, color: Colors.white),
+                      ),
                     ),
                     Container(
                       width: 100,
@@ -50,52 +118,64 @@ class _ProfileState extends State<Profile> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(top: 70),
+                  margin: const EdgeInsets.only(top: 133),
+                  width: MediaQuery.of(context).size.width,
+                  height: 78,
+                  color: Color(0xFFED1F24),
+                  //color: Colors.amber.shade50
+              ),
+              Container(
+                margin: const EdgeInsets.only(top: 65),
                 alignment: Alignment.center,
                 child: const SizedBox(
                   width: 140,
                   height: 140,
                   child: CircleAvatar(
                     backgroundColor: Colors.white,
-                    backgroundImage:
-                        AssetImage('assets/images/appbar_logo.png'),
+                    backgroundImage: AssetImage('assets/images/avatar1.png'),
                   ),
                 ),
-              )
+              ),
             ],
           ),
           Stack(
             children: [
               Container(
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height - 240,
-                decoration: const BoxDecoration(
-                    image: DecorationImage(
-                        alignment: Alignment.bottomLeft,
-                        fit: BoxFit.cover,
-                        image: AssetImage(
-                            'assets/images/cyfirma_logo_splash.png'))),
+                height: MediaQuery.of(context).size.height - 235,
+                color: Color(0xFFED1F24),
+                //decoration: BoxDecoration(color: Colors.amber.shade50),
               ),
-              Container(
-                margin: const EdgeInsets.fromLTRB(20, 15, 20, 20),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.black26, width: 1)),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                    child: Container(
-                      padding: const EdgeInsets.fromLTRB(20, 15, 20, 20),
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height - 280,
-                      child: Column(
-                        children: [Text('hello')],
-                      ),
-                    ),
-                  ),
-                ),
-              )
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  createProfileElement(Icons.person, '$firstName $lastName'),
+                  createProfileElement(Icons.email_sharp, email),
+                  createProfileElement(Icons.timelapse, timeZone),
+                  createProfileElement(Icons.phone, phone),
+                ],
+              ),
+              // Container(
+              //   margin: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+              //   decoration: BoxDecoration(
+              //       borderRadius: BorderRadius.circular(20),
+              //       border: Border.all(color: Colors.black26, width: 1)),
+              //   child: ClipRRect(
+              //     borderRadius: BorderRadius.circular(20),
+              //     child: BackdropFilter(
+              //       filter: ImageFilter.blur(sigmaX: 20.0, sigmaY: 20.0),
+              //       child: Container(
+              //         padding: const EdgeInsets.fromLTRB(20, 15, 20, 20),
+              //         width: MediaQuery.of(context).size.width,
+              //         height: MediaQuery.of(context).size.height - 280,
+              //         child: Column(
+              //           children: [Text('hello')],
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              // )
             ],
           )
         ],

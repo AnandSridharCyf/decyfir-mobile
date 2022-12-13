@@ -20,8 +20,12 @@ class _FilterModalState extends State<FilterModal> {
   Widget modalButton(int number) {
     return GestureDetector(
       onTap: (() => setState(() {
-        categoryId = number;
-        isStageOne = false;
+        //categoryId = number;
+        //isStageOne = false;
+
+        //Only Stage One Filter
+        widget.setModalCategory(Constants.categories[number]['category'], '', Constants.categories[number]['apiAlias']);
+        Navigator.pop(context);        
       })),
       child: ListTile(
         leading: CircleAvatar(radius: 30, backgroundColor: Colors.white, child: Image.asset('assets/images/${Constants.categories[number]['icon']}', fit: BoxFit.fitWidth)),
@@ -48,7 +52,7 @@ class _FilterModalState extends State<FilterModal> {
                   pressElevation: 2.0,
                   labelPadding: EdgeInsets.zero,
                   label: const Icon(Icons.cancel, size: 20),
-                  onPressed: () {widget.setModalCategory('',''); Navigator.pop(context);}
+                  onPressed: () {widget.setModalCategory('','',''); Navigator.pop(context);}
                 )
                 
               ],
