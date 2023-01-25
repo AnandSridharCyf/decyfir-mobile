@@ -101,9 +101,9 @@ class _AlertCenterState extends State<AlertCenter> {
               orgEmail: 'aptus-dev.aptus.in',
             ),
             appBar: AppBar(
-              backgroundColor: Colors.white,
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
               leading: null,
-              shadowColor: Colors.black,
+              shadowColor: Theme.of(context).colorScheme.onPrimaryContainer,
               elevation: 1,
               title: Container(
                 alignment: Alignment.center,
@@ -140,22 +140,25 @@ class _AlertCenterState extends State<AlertCenter> {
                 );
               },
             ),*/
-            bottomNavigationBar: BottomNavigationBar(
-              type: BottomNavigationBarType.shifting,
-              currentIndex: _selectedAlertPage,
-              iconSize: 20,
-              elevation: 5,
-              selectedItemColor: Colors.black,
-              unselectedItemColor: Colors.black38,
-              backgroundColor: Colors.black12,
-              onTap: _onAlertPageSelected,
-              items: const <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                    icon: Icon(FontAwesomeIcons.bell), label: 'Latest Aletts'),
-                BottomNavigationBarItem(
-                    icon: Icon(FontAwesomeIcons.circleExclamation),
-                    label: 'Early Warning')
-              ],
+            bottomNavigationBar: Container(
+              color: Theme.of(context).colorScheme.background,
+              child: BottomNavigationBar(
+                type: BottomNavigationBarType.shifting,
+                currentIndex: _selectedAlertPage,
+                iconSize: 20,
+                elevation: 5,
+                selectedItemColor: Theme.of(context).colorScheme.secondary,
+                unselectedItemColor: Theme.of(context).colorScheme.primary,
+                //backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                onTap: _onAlertPageSelected,
+                items: const <BottomNavigationBarItem>[
+                  BottomNavigationBarItem(
+                      icon: Icon(FontAwesomeIcons.bell), label: 'Latest Aletts'),
+                  BottomNavigationBarItem(
+                      icon: Icon(FontAwesomeIcons.circleExclamation),
+                      label: 'Early Warning')
+                ],
+              ),
             ),
           ),
         ],

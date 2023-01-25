@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:decyfir/src/common/shared_prefs_handler.dart';
 import 'package:flutter/material.dart';
 
@@ -121,7 +119,7 @@ class _ProfileState extends State<Profile> {
                   margin: const EdgeInsets.only(top: 133),
                   width: MediaQuery.of(context).size.width,
                   height: 78,
-                  color: Color(0xFFED1F24),
+                  //color: Color(0xFFED1F24),
                   //color: Colors.amber.shade50
               ),
               Container(
@@ -131,7 +129,7 @@ class _ProfileState extends State<Profile> {
                   width: 140,
                   height: 140,
                   child: CircleAvatar(
-                    backgroundColor: Colors.white,
+                    backgroundColor: Colors.grey,
                     backgroundImage: AssetImage('assets/images/avatar1.png'),
                   ),
                 ),
@@ -143,7 +141,7 @@ class _ProfileState extends State<Profile> {
               Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height - 235,
-                color: Color(0xFFED1F24),
+                //color: Color(0xFFED1F24),
                 //decoration: BoxDecoration(color: Colors.amber.shade50),
               ),
               Column(

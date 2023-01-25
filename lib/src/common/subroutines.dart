@@ -61,7 +61,6 @@ class Subroutines {
   }
 
   //qadecyfir.cyfirma.com/org/api/org-users/loginId?loginId=mobiletestuser@cyfirma.com
-
   static Future<http.Response> getOrgUserData(String token, String username) {
     Uri path = Uri.https(
         Values.PREFIXES[Values.CURRENT_BUILD] + _returnBaseUrl(),

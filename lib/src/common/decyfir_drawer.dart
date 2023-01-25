@@ -38,20 +38,24 @@ class _DecyfirDrawerState extends State<DecyfirDrawer> {
             decoration: BoxDecoration(
               //color: Color(0xFFEF695F),
               //color: const Color(0xFF37474F),
-              color: Theme.of(context).colorScheme.background
+              color: Theme.of(context).colorScheme.secondary
               //backgroundBlendMode: BlendMode.multiply
             ),
             accountName: RichText(text: TextSpan(
               children: <TextSpan> [
                 TextSpan(
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.secondary,
+                    color: Theme.of(context).colorScheme.onSecondaryContainer,
                     fontSize: 16,
                     fontWeight: FontWeight.w600
                   ),
                   text: 'Organization: '
                 ),
-                TextSpan(text: orgName)
+                TextSpan(
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.tertiary,
+                  ),
+                  text: orgName)
               ]
             )),
             //accountName: Text('Organisation: $organisation'),
@@ -59,13 +63,17 @@ class _DecyfirDrawerState extends State<DecyfirDrawer> {
               children: <TextSpan> [
                 TextSpan(
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.secondary,
+                    color: Theme.of(context).colorScheme.onSecondaryContainer,
                     fontSize: 16,
                     fontWeight: FontWeight.w600
                   ),
                   text: 'Email: '
                 ),
-                TextSpan(text: email)
+                TextSpan(
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.tertiary,
+                  ),
+                  text: email)
               ]
             )),
             currentAccountPictureSize: const Size.square(60),

@@ -1,3 +1,4 @@
+import 'package:decyfir/src/common/shared_prefs_handler.dart';
 import 'package:flutter/material.dart';
 
 import 'settings_service.dart';
@@ -16,9 +17,11 @@ class SettingsController with ChangeNotifier {
   // Make ThemeMode a private variable so it is not updated directly without
   // also persisting the changes with the SettingsService.
   late ThemeMode _themeMode;
+  final List<bool> _riskLevelActive = [true, false, false];
 
   // Allow Widgets to read the user's preferred ThemeMode.
   ThemeMode get themeMode => _themeMode;
+  List<bool> get riskLevelActive => _riskLevelActive;
 
   /// Load the user's settings from the SettingsService. It may load from a
   /// local database or the internet. The controller only knows it can load the
@@ -47,4 +50,16 @@ class SettingsController with ChangeNotifier {
     // SettingService.
     await _settingsService.updateThemeMode(newThemeMode);
   }
+
+  void toggleRiskActive(int index) {
+    List<String> riskLabel = ["Critical", "High", "Medium"];
+    _riskLevelActive[index] = !_riskLevelActive[index];
+    SharedPreferencesHandler().setBool(riskLabel[index], _riskLevelActive[index]);
+    print(_riskLevelActive);
+  }
+
+  Color getColor(index) {
+    return riskLevelActive[index] ? Colors.red : Colors.black;
+  }
+
 }

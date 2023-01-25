@@ -108,11 +108,19 @@ class _AlertCenterListElementState extends State<AlertCenterListElement> {
             ),
             height: isExpanded ? 30*countLines.toDouble() + 50 : 0,
             duration: const Duration(milliseconds: 400),
-            child: Column(
-              children: [
-                Text(widget.item['category']),
-                Html(data: description),
-              ],
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                    
+                    child: Text(widget.item['category'])),
+                  SizedBox(
+                    height: 100,
+                    child: Html(data: description)),
+                ],
+              ),
             ),
           )
         ],

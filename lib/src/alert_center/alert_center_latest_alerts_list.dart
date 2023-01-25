@@ -42,8 +42,8 @@ class _AlertCenterLatestAlertsListState
     });
 
     SharedPreferencesHandler().getString('orgId').then((value) async {
-      var alertResp = await Subroutines.getLatestAlerts(
-          token, apiAlias, false, value);
+      var alertResp =
+          await Subroutines.getLatestAlerts(token, apiAlias, false, value);
       if (alertResp.statusCode == 200) {
         setState(() {
           _alertsData = json.decode(alertResp.body)['Alerts'];
@@ -65,8 +65,8 @@ class _AlertCenterLatestAlertsListState
       this.subCategory = subCategory;
       this.apiAlias = apiAlias;
       SharedPreferencesHandler()
-        .getString('authToken')
-        .then((value) => _getLatestAlerts(value));
+          .getString('authToken')
+          .then((value) => _getLatestAlerts(value));
       print('Setting $category | $subCategory');
     });
   }
@@ -76,7 +76,7 @@ class _AlertCenterLatestAlertsListState
     finalList = updateList(Subroutines.filterChosen(_alertsData));
     riskLevelCounts = Subroutines.generateCounts(_alertsData);
     return Container(
-      decoration: const BoxDecoration(color: Color(0xFFE6ECEC)),
+      decoration: BoxDecoration(color: Theme.of(context).colorScheme.background),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -138,7 +138,9 @@ class _AlertCenterLatestAlertsListState
           ),
           Container(
             padding: const EdgeInsets.fromLTRB(10, 0, 10, 15),
-            child:category != ''? Text('Showing your alerts for $category') : const Text('Showing all your alerts'),
+            child: category != ''
+                ? Text('Showing your alerts for $category')
+                : const Text('Showing all your alerts'),
           ),
           Container(
             padding: const EdgeInsets.fromLTRB(10, 0, 10, 15),
@@ -184,12 +186,13 @@ class _AlertCenterLatestAlertsListState
                   height: MediaQuery.of(context).size.height - 320,
                   child: SingleChildScrollView(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      
-                      if(finalList.isEmpty) const Center(child: Text('No alerts in this category')),
-                      if(finalList.isNotEmpty) for (var item in finalList)
-                        AlertCenterListElement(item: item)
+                      if (finalList.isEmpty)
+                        const Center(child: Text('No alerts in this category')),
+                      if (finalList.isNotEmpty)
+                        for (var item in finalList)
+                          AlertCenterListElement(item: item)
                     ],
                   )),
                 ),
