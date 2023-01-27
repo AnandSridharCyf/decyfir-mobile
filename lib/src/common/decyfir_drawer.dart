@@ -76,10 +76,9 @@ class _DecyfirDrawerState extends State<DecyfirDrawer> {
                   text: email)
               ]
             )),
-            currentAccountPictureSize: const Size.square(60),
-            
+            currentAccountPictureSize: const Size.square(60),            
             currentAccountPicture: CircleAvatar(
-              backgroundColor: Theme.of(context).colorScheme.onPrimary,
+              backgroundColor: Theme.of(context).colorScheme.background,
               backgroundImage: const AssetImage('assets/images/appbar_logo.png'),
             ),
             

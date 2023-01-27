@@ -66,7 +66,7 @@ class _ProfileState extends State<Profile> {
             Expanded(
                 child: Text(
               label,
-              style: const TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16, color: Colors.black),
             )),
           ],
         ),
@@ -76,6 +76,7 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
+          backgroundColor: Theme.of(context).colorScheme.background,
       body: Column(
         children: [
           Stack(
@@ -85,7 +86,7 @@ class _ProfileState extends State<Profile> {
                 height: 133,
                 decoration: BoxDecoration(
                    //color: Colors.white,
-                   color: Theme.of(context).colorScheme.background,
+                   color: Theme.of(context).colorScheme.onSecondaryContainer,
                 //     gradient: RadialGradient(radius: 5, colors: [
                 //   Colors.blueGrey,
                 //   Colors.blueGrey.shade600,
@@ -102,8 +103,8 @@ class _ProfileState extends State<Profile> {
                       onTap: () => Navigator.pop(context),
                       child: Container(
                         color: Colors.transparent,
-                        child: const Icon(Icons.arrow_back,
-                            size: 25, color: Colors.white),
+                        child: Icon(Icons.arrow_back,
+                            size: 25, color: Theme.of(context).colorScheme.primary),
                       ),
                     ),
                     Container(
@@ -125,12 +126,12 @@ class _ProfileState extends State<Profile> {
               Container(
                 margin: const EdgeInsets.only(top: 65),
                 alignment: Alignment.center,
-                child: const SizedBox(
+                child: SizedBox(
                   width: 140,
                   height: 140,
                   child: CircleAvatar(
-                    backgroundColor: Colors.grey,
-                    backgroundImage: AssetImage('assets/images/avatar1.png'),
+                    backgroundColor: Theme.of(context).colorScheme.background,
+                    backgroundImage: const AssetImage('assets/images/avatar1.png'),
                   ),
                 ),
               ),
@@ -138,7 +139,7 @@ class _ProfileState extends State<Profile> {
           ),
           Stack(
             children: [
-              Container(
+              SizedBox(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height - 235,
                 //color: Color(0xFFED1F24),

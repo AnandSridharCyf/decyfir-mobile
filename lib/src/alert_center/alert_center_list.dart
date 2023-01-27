@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:decyfir/src/alert_center/early_warning_list_element.dart';
 import 'package:decyfir/src/common/shared_prefs_handler.dart';
 import 'package:decyfir/src/common/subroutines.dart';
 import 'package:decyfir/src/widgets/risk_widget.dart';
@@ -69,8 +70,8 @@ class _AlertCenterListState extends State<AlertCenterList> {
                     Text('Dashboard',
                         style: TextStyle(fontSize: 12, color: Colors.black87)),
                     Text('Early Warnings',
-                        style:
-                            TextStyle(fontSize: 22, fontWeight: FontWeight.w600))
+                        style: TextStyle(
+                            fontSize: 22, fontWeight: FontWeight.w600))
                   ],
                 ),
                 //const Icon(FontAwesomeIcons.sort, size: 30)
@@ -79,7 +80,8 @@ class _AlertCenterListState extends State<AlertCenterList> {
           ),
           Container(
             padding: const EdgeInsets.fromLTRB(10, 0, 10, 15),
-            child: const Text('Find information related to your attack surface'),
+            child:
+                const Text('Find information related to your attack surface'),
           ),
           Container(
             padding: const EdgeInsets.fromLTRB(10, 0, 10, 15),
@@ -123,117 +125,11 @@ class _AlertCenterListState extends State<AlertCenterList> {
                   width: MediaQuery.of(context).size.width,
                   child: ListView.builder(
                       restorationId: 'alertCenterList',
-                      itemCount: finalList.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        var item = finalList[index];
-                        return Container(
-                          margin: const EdgeInsets.fromLTRB(15, 20, 15, 0),
-                          decoration: BoxDecoration(
-                              border:
-                                  Border.all(color: Colors.black45, width: 1)),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                padding:
-                                    const EdgeInsets.fromLTRB(18, 12, 18, 12),
-                                decoration: const BoxDecoration(
-                                    border: Border(
-                                        bottom: BorderSide(
-                                            color: Colors.black38, width: 1))),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                              color: Subroutines.getRiskColor(
-                                                  item['riskScore']),
-                                              borderRadius:
-                                                  BorderRadius.circular(20)),
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 15, 15, 15),
-                                          width: 10,
-                                          height: 10,
-                                        ),
-                                        const SizedBox(width: 10),
-                                        Container(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              7, 4, 7, 4),
-                                          child: Text(
-                                            Subroutines.getRiskLevel(
-                                                    item['riskScore'])
-                                                .toString(),
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                color: Subroutines.getRiskColor(
-                                                    item['riskScore'])),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text('v${item['version']}'),
-                                        const SizedBox(width: 10),
-                                        Text(Subroutines.getDate(
-                                            item['publishAt']))
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                padding:
-                                    const EdgeInsets.fromLTRB(18, 12, 18, 12),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                          color: Subroutines.getRiskColor(
-                                              item['riskScore']),
-                                          borderRadius:
-                                              BorderRadius.circular(20)),
-                                      padding: const EdgeInsets.all(10),
-                                      width: 40,
-                                      height: 40,
-                                      child: Text(item['riskScore'].toString(),
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.white)),
-                                    ),
-                                    const SizedBox(width: 20),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(item['reportName'] ?? '',
-                                              style: const TextStyle(
-                                                  color: Colors.black87,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 14)),
-                                          const SizedBox(height: 6),
-                                          Text(
-                                            item['description'] ?? '',
-                                            style: const TextStyle(
-                                                color: Colors.black54,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 12),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        );
-                      })),
+                      itemCount: finalList.length, itemBuilder: (BuildContext context, int index) {
+                        return finalList.isEmpty ? const Center(
+                              child: Text('No alerts in this category')) : EarlyWarningListElement(item: finalList[index]);
+                      },
+                      )),
         ],
       ),
     );

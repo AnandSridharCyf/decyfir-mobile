@@ -17,7 +17,6 @@ class _EarlyWarningListElementState extends State<EarlyWarningListElement> {
 
   @override
   Widget build(BuildContext context) {
-    String category = widget.item['subCategory'] != null ? widget.item['subCategory'].toUpperCase() : "";
     String description = widget.item['description'] ?? '';
     int countLines = (description != null && description.length > 50) ? description.length ~/ 50 : 1;
     return GestureDetector(
@@ -72,7 +71,7 @@ class _EarlyWarningListElementState extends State<EarlyWarningListElement> {
                             color: Colors.blueGrey,
                           ),
                           padding: const EdgeInsets.fromLTRB(7, 4, 7, 4),
-                          child: Text(category,
+                          child: Text(widget.item['reportTypeName'],
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                   fontSize: 12,
@@ -80,7 +79,7 @@ class _EarlyWarningListElementState extends State<EarlyWarningListElement> {
                                   fontWeight: FontWeight.w500)),
                         ),
                         Text(
-                          Subroutines.getDate(widget.item['createdDate']),
+                          Subroutines.getDate(widget.item['publishAt']),
                           style: const TextStyle(color: Colors.black87),
                         ),
                       ],
@@ -91,7 +90,7 @@ class _EarlyWarningListElementState extends State<EarlyWarningListElement> {
                     padding: const EdgeInsets.fromLTRB(0, 3, 15, 7),
                     //Design 1
                     //padding: const EdgeInsets.fromLTRB(0, 5, 15, 10),
-                    child: Text(widget.item['title'] ?? '',
+                    child: Text(widget.item['reportName'] ?? '',
                         maxLines: 2,
                         style: const TextStyle(
                             color: Colors.black54, fontWeight: FontWeight.w500)),
@@ -114,7 +113,7 @@ class _EarlyWarningListElementState extends State<EarlyWarningListElement> {
                   Container(
                     padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                     
-                    child: Text(widget.item['category'])),
+                    child: Text(widget.item['reportTypeName'])),
                   SizedBox(
                     height: 100,
                     child: Html(data: description)),
