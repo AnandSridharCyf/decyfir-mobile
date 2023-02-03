@@ -32,7 +32,7 @@ class Subroutines {
     if (token == null) {
       payload = {"username": username, "password": password};
     } else {
-      payload = {"username": username, "password": password, 'token': token};
+      payload = {"username": username, "password": password, 'verificationCode': token};
     }
     Uri path = Uri.https(
         Values.PREFIXES[Values.CURRENT_BUILD] + _returnBaseUrl(),
@@ -50,13 +50,31 @@ class Subroutines {
     });
   }
 
+  //qadecyfir.cyfirma.com/api/account/reset-password/init
+  static Future<http.Response> resetPassword(String email) async {
+    Uri path = Uri.https(
+        Values.PREFIXES[Values.CURRENT_BUILD] + _returnBaseUrl(),
+        buildUrl(Values.API_PATHS['reset_password'].toString()));
+    return http
+        .post(path,
+            headers: {
+              "Accept": "application/json, text/plain, */*",
+              'Content-Type': 'text/plain',
+            },
+            body: email)
+        .catchError((onError) {
+      //print(onError.toString());
+    }).then((http.Response res){
+      return res;
+    });
+  }
+
   //qadecyfir.cyfirma.com/api/account - Not Used
 
   static Future<http.Response> getAccountData(String token) async {
     Uri path = Uri.https(
         Values.PREFIXES[Values.CURRENT_BUILD] + _returnBaseUrl(),
         buildUrl(Values.API_PATHS['account'].toString()));
-    //print('Getting Account data from path: $path');
     return _getCall(token, path);
   }
 
@@ -81,7 +99,6 @@ class Subroutines {
       "page": "0",
       "size": '20',
     });
-    //print(path.toString());
     return _getCall(token, path);
   }
 
@@ -98,7 +115,6 @@ class Subroutines {
           (DateTime.now().millisecondsSinceEpoch - (86400 * 1000)).toString(),
       "toDate": DateTime.now().millisecondsSinceEpoch.toString()
     });
-    //print(path.toString());
     return _getCall(token, path);
   }
 
@@ -114,14 +130,9 @@ class Subroutines {
       "riskScores": "5,6,7,8,9,10,"
     };
     if(alertType != '') payload['alertType'] = alertType;
-    print(payload);
-
     Uri path = Uri.https(
         Values.PREFIXES[Values.CURRENT_BUILD] + _returnBaseUrl(),
         buildUrl(Values.API_PATHS['latest_alerts'].toString()), payload);
-    print(path);
-
-
     return _getCall(token, path);
   }
 
@@ -139,12 +150,10 @@ class Subroutines {
           (DateTime.now().millisecondsSinceEpoch - (86400 * 1000)).toString(),
       "toDate": DateTime.now().millisecondsSinceEpoch.toString()
     });
-    //print("Calling latest alerts on path: $path");
     return _getCall(token, path);
   }
 
   static Future<http.Response> _getCall(String token, Uri path) async {
-    //NetworkHandler.isOnlineWithToast();
     return http
         .get(
           path,
@@ -156,12 +165,24 @@ class Subroutines {
         )
         .catchError((onError) {})
         .then((http.Response res) {
-          if (res.statusCode == 401) {
-            //sheetNotifier.value = 97;
-            //sheetNotifier.notifyListeners();
-          }
           return res;
         });
+  }
+
+  static Future<http.Response> _postCall(String token, Uri path, var payload) {
+    return http
+        .post(path,
+            headers: {
+              "Accept": "application/json",
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + token
+            },
+            body: jsonEncode(payload))
+        .catchError((onError) {
+      //print(onError.toString());
+    }).then((http.Response res){
+      return res;
+    });
   }
 
   static String _returnBaseUrl() {
@@ -465,6 +486,7 @@ class Values {
     "version": "app-versions/platform",
     "account": "account",
     "login": "authenticate",
+    "reset_password" : "account/reset-password/init",
     "online_report_list": "online-reports/dasboard/list",
     "latest_alerts": "alerts/v2/listing",
     "org_user_data": "org-users/loginId"

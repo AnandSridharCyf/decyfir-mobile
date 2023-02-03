@@ -54,6 +54,8 @@ class SettingsController with ChangeNotifier {
   void toggleRiskActive(int index) {
     List<String> riskLabel = ["Critical", "High", "Medium"];
     _riskLevelActive[index] = !_riskLevelActive[index];
+
+    notifyListeners();
     SharedPreferencesHandler().setBool(riskLabel[index], _riskLevelActive[index]);
     print(_riskLevelActive);
   }

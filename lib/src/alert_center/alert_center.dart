@@ -153,10 +153,10 @@ class _AlertCenterState extends State<AlertCenter> {
                 onTap: _onAlertPageSelected,
                 items: const <BottomNavigationBarItem>[
                   BottomNavigationBarItem(
-                      icon: Icon(FontAwesomeIcons.bell), label: 'Latest Aletts'),
+                      icon: Icon(FontAwesomeIcons.bell), label: 'Latest Alerts'),
                   BottomNavigationBarItem(
                       icon: Icon(FontAwesomeIcons.circleExclamation),
-                      label: 'Early Warning')
+                      label: 'Early Warnings')
                 ],
               ),
             ),

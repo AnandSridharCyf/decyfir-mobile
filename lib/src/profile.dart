@@ -76,108 +76,113 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-          backgroundColor: Theme.of(context).colorScheme.background,
-      body: Column(
-        children: [
-          Stack(
-            children: [
-              Container(
-                width: MediaQuery.of(context).size.width,
-                height: 133,
-                decoration: BoxDecoration(
-                   //color: Colors.white,
-                   color: Theme.of(context).colorScheme.onSecondaryContainer,
-                //     gradient: RadialGradient(radius: 5, colors: [
-                //   Colors.blueGrey,
-                //   Colors.blueGrey.shade600,
-                //   Colors.white
-                // ])
+      backgroundColor: Colors.transparent,
+      body: Container(
+        color: Theme.of(context).colorScheme.primaryContainer,
+        child: Column(
+          children: [
+            Stack(
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 133,
+                  decoration: BoxDecoration(
+                    //color: Colors.white,
+                    color: Theme.of(context).colorScheme.tertiary,
+                    //     gradient: RadialGradient(radius: 5, colors: [
+                    //   Colors.blueGrey,
+                    //   Colors.blueGrey.shade600,
+                    //   Colors.white
+                    // ])
+                  ),
                 ),
-              ),
-              Container(
-                padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: Container(
-                        color: Colors.transparent,
-                        child: Icon(Icons.arrow_back,
-                            size: 25, color: Theme.of(context).colorScheme.primary),
+                Container(
+                  padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: Container(
+                          color: Colors.transparent,
+                          child: Icon(Icons.arrow_back,
+                              size: 25,
+                              color: Theme.of(context).colorScheme.primaryContainer),
+                        ),
                       ),
-                    ),
-                    Container(
-                      width: 100,
-                      alignment: Alignment.center,
-                      child:
-                          Image.asset('assets/images/decyfir_logo_white.png'),
-                    )
-                  ],
+                      Container(
+                        width: 100,
+                        alignment: Alignment.center,
+                        child:
+                            Image.asset('assets/images/decyfir_logo_white.png'),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              Container(
+                Container(
                   margin: const EdgeInsets.only(top: 133),
                   width: MediaQuery.of(context).size.width,
                   height: 78,
                   //color: Color(0xFFED1F24),
                   //color: Colors.amber.shade50
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 65),
-                alignment: Alignment.center,
-                child: SizedBox(
-                  width: 140,
-                  height: 140,
-                  child: CircleAvatar(
-                    backgroundColor: Theme.of(context).colorScheme.background,
-                    backgroundImage: const AssetImage('assets/images/avatar1.png'),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 65),
+                  alignment: Alignment.center,
+                  child: SizedBox(
+                    width: 140,
+                    height: 140,
+                    child: CircleAvatar(
+                      backgroundColor: Theme.of(context).colorScheme.background,
+                      backgroundImage:
+                          const AssetImage('assets/images/avatar1.png'),
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          Stack(
-            children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height - 235,
-                //color: Color(0xFFED1F24),
-                //decoration: BoxDecoration(color: Colors.amber.shade50),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  createProfileElement(Icons.person, '$firstName $lastName'),
-                  createProfileElement(Icons.email_sharp, email),
-                  createProfileElement(Icons.timelapse, timeZone),
-                  createProfileElement(Icons.phone, phone),
-                ],
-              ),
-              // Container(
-              //   margin: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-              //   decoration: BoxDecoration(
-              //       borderRadius: BorderRadius.circular(20),
-              //       border: Border.all(color: Colors.black26, width: 1)),
-              //   child: ClipRRect(
-              //     borderRadius: BorderRadius.circular(20),
-              //     child: BackdropFilter(
-              //       filter: ImageFilter.blur(sigmaX: 20.0, sigmaY: 20.0),
-              //       child: Container(
-              //         padding: const EdgeInsets.fromLTRB(20, 15, 20, 20),
-              //         width: MediaQuery.of(context).size.width,
-              //         height: MediaQuery.of(context).size.height - 280,
-              //         child: Column(
-              //           children: [Text('hello')],
-              //         ),
-              //       ),
-              //     ),
-              //   ),
-              // )
-            ],
-          )
-        ],
+              ],
+            ),
+            Stack(
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height - 235,
+                  //color: Color(0xFFED1F24),
+                  //decoration: BoxDecoration(color: Colors.amber.shade50),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    createProfileElement(Icons.person, '$firstName $lastName'),
+                    createProfileElement(Icons.email_sharp, email),
+                    createProfileElement(Icons.timelapse, timeZone),
+                    createProfileElement(Icons.phone, phone),
+                  ],
+                ),
+                // Container(
+                //   margin: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                //   decoration: BoxDecoration(
+                //       borderRadius: BorderRadius.circular(20),
+                //       border: Border.all(color: Colors.black26, width: 1)),
+                //   child: ClipRRect(
+                //     borderRadius: BorderRadius.circular(20),
+                //     child: BackdropFilter(
+                //       filter: ImageFilter.blur(sigmaX: 20.0, sigmaY: 20.0),
+                //       child: Container(
+                //         padding: const EdgeInsets.fromLTRB(20, 15, 20, 20),
+                //         width: MediaQuery.of(context).size.width,
+                //         height: MediaQuery.of(context).size.height - 280,
+                //         child: Column(
+                //           children: [Text('hello')],
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // )
+              ],
+            )
+          ],
+        ),
       ),
     ));
   }

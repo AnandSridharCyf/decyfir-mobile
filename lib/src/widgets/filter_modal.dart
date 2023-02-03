@@ -27,10 +27,13 @@ class _FilterModalState extends State<FilterModal> {
         widget.setModalCategory(Constants.categories[number]['category'], '', Constants.categories[number]['apiAlias']);
         Navigator.pop(context);        
       })),
-      child: ListTile(
-        leading: CircleAvatar(radius: 30, backgroundColor: Colors.white, child: Image.asset('assets/images/${Constants.categories[number]['icon']}', fit: BoxFit.fitWidth)),
-        dense: true,
-        title: Text(Constants.categories[number]['category'])
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 3),
+        child: ListTile(
+          leading: CircleAvatar(radius: 22, backgroundColor: Colors.white, backgroundImage: AssetImage('assets/images/${Constants.categories[number]['icon']}')),
+          dense: true,
+          title: Text(Constants.categories[number]['category'])
+        ),
       ),
     );
   }

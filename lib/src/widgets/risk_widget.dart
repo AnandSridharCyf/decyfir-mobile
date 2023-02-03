@@ -23,7 +23,7 @@ Widget createRiskLevelChip(String value, bool active, int count, BuildContext co
                           borderRadius: BorderRadius.circular(20)
                         ),
                         padding: const EdgeInsets.fromLTRB(8, 2, 8, 2),
-                        child: Text(count.toString(), style: const TextStyle(fontSize: 14),)
+                        child: Text(count.toString(), style: const TextStyle(fontSize: 14, color: Colors.black),)
                         )
                     ],
                   )

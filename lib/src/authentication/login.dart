@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:decyfir/src/alert_center/alert_center.dart';
+import 'package:decyfir/src/authentication/reset_password.dart';
 import 'package:decyfir/src/common/notification_setup.dart';
 import 'package:decyfir/src/common/shared_prefs_handler.dart';
 import 'package:decyfir/src/common/subroutines.dart';
@@ -21,7 +22,6 @@ class _LoginState extends State<Login> {
   final _scaffoldKey = GlobalKey<ScaffoldMessengerState>();
   final _loginKey = GlobalKey<FormState>();
   String _username = '', _password = '', _authToken = '';
-  bool _eulaAccepted = false, _authTokenProvided = false;
 
   @override
   void initState() {
@@ -59,8 +59,9 @@ class _LoginState extends State<Login> {
       default:
         //final res = json.decode(response.body);
         if (response.statusCode == 401) {
-          if (json.decode(response.body)['detail'].contains('not activated')) {
-            print('Not activated account');
+          if (json.decode(response.body) != null) {
+            if (json.decode(response.body)['detail'].contains('not activated'))
+              print('Not activated account');
           } else {
             _scaffoldKey.currentState?.showSnackBar(const SnackBar(
                 content: Text('Email Id or Password incorrect')));
@@ -107,18 +108,18 @@ class _LoginState extends State<Login> {
                         //width: width * 0.7,
                         child: TextFormField(
                           onSaved: (value) {
-                            _authToken = value.toString();
+                            setState(() {
+                              _authToken = value.toString();
+                            });
                           },
                         ),
                       ),
                       GestureDetector(
                         onTap: () {
                           FocusScope.of(context).requestFocus(FocusNode());
-                          _authTokenProvided = true;
-                          if (!_loading) {
-                            _loginKey.currentState?.save();
-                            _performLoginWithToken(context);
-                          }
+                          print('Auth version got called');
+                          _loginKey.currentState?.save();
+                          _performLoginWithToken(context);
                         },
                         child: Container(
                           margin: const EdgeInsets.only(left: 10),
@@ -195,7 +196,7 @@ class _LoginState extends State<Login> {
                               fit: BoxFit.fitHeight),
                         ),
                         Container(
-                          padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                          padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
                           child: Form(
                               key: _loginKey,
                               child: Column(
@@ -204,52 +205,61 @@ class _LoginState extends State<Login> {
                                   const Text('Welcome',
                                       style: TextStyle(
                                           fontWeight: FontWeight.w700,
-                                          fontSize: 30)),
+                                          fontSize: 30,
+                                          color: Colors.black)),
                                   const SizedBox(height: 5),
                                   const Text(
                                       'Please sign in using your credentials provided',
                                       style: TextStyle(
-                                          fontWeight: FontWeight.w400,
+                                          fontWeight: FontWeight.w300,
                                           fontSize: 14,
-                                          color: Colors.black45)),
+                                          color: Colors.black54)),
                                   const SizedBox(height: 15),
-                                  Text('Username*',
+                                  const Text('Username*',
                                       style: TextStyle(
                                           fontSize: 16,
-                                          color: Colors.grey.shade700,
+                                          color: Colors.blueGrey,
                                           fontWeight: FontWeight.w500)),
                                   TextFormField(
+                                    decoration: const InputDecoration(
+                                        enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                width: 0.5,
+                                                color: Colors.black87)),
+                                        focusColor: Colors.blueGrey,
+                                        focusedBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                width: 2,
+                                                color: Colors.blueGrey))),
+                                    style:
+                                        const TextStyle(color: Colors.blueGrey),
                                     onSaved: (value) =>
                                         _username = value.toString(),
                                   ),
-                                  //getTextFieldLight(width, TextEditingController(), 'Enter your email', center: false, onChanged: (value) => _username = value),
                                   const SizedBox(height: 20),
-                                  Text('Password*',
+                                  const Text('Password*',
                                       style: TextStyle(
                                           fontSize: 16,
-                                          color: Colors.grey.shade700,
+                                          color: Colors.blueGrey,
                                           fontWeight: FontWeight.w500)),
                                   TextFormField(
+                                    decoration: const InputDecoration(
+                                        enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                width: 0.5,
+                                                color: Colors.black87)),
+                                        focusColor: Colors.blueGrey,
+                                        focusedBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                width: 2,
+                                                color: Colors.blueGrey))),
                                     obscureText: true,
+                                    style:
+                                        const TextStyle(color: Colors.blueGrey),
                                     onSaved: (value) =>
                                         _password = value.toString(),
                                   ),
                                   const SizedBox(height: 10),
-                                  Row(
-                                    children: [
-                                      Checkbox(
-                                          value: _eulaAccepted,
-                                          onChanged: (value) => setState(() {
-                                                _eulaAccepted = value!;
-                                              })),
-                                      const Text('Save user details')
-                                    ],
-                                  ),
-                                  //PasswordTextInput(onChanged:(value) => _password = value, hintTxt: 'Enter your password'),
-                                  const SizedBox(height: 10),
-                                  // getTextFieldLight(width, _passwordController,
-                                  //     'Enter your password',
-                                  //     obscure: true, center: false),
                                   GestureDetector(
                                     onTap: () {
                                       FocusScope.of(context)
@@ -279,6 +289,8 @@ class _LoginState extends State<Login> {
                                     ),
                                   ),
                                   GestureDetector(
+                                    onTap: (() => Navigator.restorablePushNamed(
+                                        context, ResetPassword.routeName)),
                                     child: const Center(
                                       child: Padding(
                                         padding: EdgeInsets.all(8.0),

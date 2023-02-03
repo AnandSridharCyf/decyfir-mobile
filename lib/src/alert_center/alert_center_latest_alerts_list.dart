@@ -67,7 +67,6 @@ class _AlertCenterLatestAlertsListState
       SharedPreferencesHandler()
           .getString('authToken')
           .then((value) => _getLatestAlerts(value));
-      print('Setting $category | $subCategory');
     });
   }
 
@@ -76,7 +75,8 @@ class _AlertCenterLatestAlertsListState
     finalList = updateList(Subroutines.filterChosen(_alertsData));
     riskLevelCounts = Subroutines.generateCounts(_alertsData);
     return Container(
-      decoration: BoxDecoration(color: Theme.of(context).colorScheme.background),
+      decoration:
+          BoxDecoration(color: Theme.of(context).colorScheme.background),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -87,12 +87,14 @@ class _AlertCenterLatestAlertsListState
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const <Text>[
+                  children: <Text>[
                     Text('Dashboard',
-                        style: TextStyle(fontSize: 12, color: Colors.black87)),
+                        style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.secondary)),
                     Text('Latest Alerts',
                         style: TextStyle(
-                            fontSize: 22, fontWeight: FontWeight.w600))
+                            fontSize: 22,
+                            fontWeight: FontWeight.w600,
+                            color: Theme.of(context).colorScheme.secondary))
                   ],
                 ),
                 Row(
@@ -128,7 +130,9 @@ class _AlertCenterLatestAlertsListState
                             return FilterModal(context, setModalCategory,
                                 data: finalList);
                           })),
-                      child: const Icon(FontAwesomeIcons.filter, size: 30),
+                      child: Icon(FontAwesomeIcons.filter,
+                          size: 30,
+                          color: Theme.of(context).colorScheme.secondary),
                     ),
                     const SizedBox(width: 5)
                   ],
@@ -139,8 +143,12 @@ class _AlertCenterLatestAlertsListState
           Container(
             padding: const EdgeInsets.fromLTRB(10, 0, 10, 15),
             child: category != ''
-                ? Text('Showing your alerts for $category')
-                : const Text('Showing all your alerts'),
+                ? Text('Showing your alerts for $category',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary))
+                : Text('Showing all your alerts',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary)),
           ),
           Container(
             padding: const EdgeInsets.fromLTRB(10, 0, 10, 15),
@@ -183,13 +191,18 @@ class _AlertCenterLatestAlertsListState
                         child: const AnimatedLogo()),
                   ))
               : SizedBox(
-                  height: MediaQuery.of(context).size.height - 320,
+                  height: MediaQuery.of(context).size.height - 295,
                   child: SingleChildScrollView(
                       child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (finalList.isEmpty)
-                        const Center(child: Text('No alerts in this category')),
+                        Center(
+                            child: Text(
+                          'No alerts in this category',
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary),
+                        )),
                       if (finalList.isNotEmpty)
                         for (var item in finalList)
                           AlertCenterListElement(item: item)

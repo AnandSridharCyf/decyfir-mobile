@@ -35,3 +35,13 @@ class ReceivedNotification {
   final String? body;
   final String? payload;
 }
+
+class FaqElem {
+  FaqElem({
+    required this.question,
+    required this.answer,
+  });
+
+  final String question;
+  final String answer;
+}

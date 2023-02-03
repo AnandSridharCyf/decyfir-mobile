@@ -55,7 +55,8 @@ class _AlertCenterListState extends State<AlertCenterList> {
     finalList = updateList(Subroutines.filterChosen(earlyWarningsData));
     riskLevelCounts = Subroutines.generateCounts(earlyWarningsData);
     return Container(
-      decoration: const BoxDecoration(color: Color(0xFFE6ECEC)),
+      decoration:
+          BoxDecoration(color: Theme.of(context).colorScheme.background),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -66,12 +67,16 @@ class _AlertCenterListState extends State<AlertCenterList> {
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const <Text>[
+                  children: <Text>[
                     Text('Dashboard',
-                        style: TextStyle(fontSize: 12, color: Colors.black87)),
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Theme.of(context).colorScheme.secondary)),
                     Text('Early Warnings',
                         style: TextStyle(
-                            fontSize: 22, fontWeight: FontWeight.w600))
+                            fontSize: 22,
+                            fontWeight: FontWeight.w600,
+                            color: Theme.of(context).colorScheme.secondary))
                   ],
                 ),
                 //const Icon(FontAwesomeIcons.sort, size: 30)
@@ -79,10 +84,10 @@ class _AlertCenterListState extends State<AlertCenterList> {
             ),
           ),
           Container(
-            padding: const EdgeInsets.fromLTRB(10, 0, 10, 15),
-            child:
-                const Text('Find information related to your attack surface'),
-          ),
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 15),
+              child: Text('Find information related to your attack surface',
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.secondary))),
           Container(
             padding: const EdgeInsets.fromLTRB(10, 0, 10, 15),
             child: Row(
@@ -124,12 +129,15 @@ class _AlertCenterListState extends State<AlertCenterList> {
                   height: MediaQuery.of(context).size.height - 300,
                   width: MediaQuery.of(context).size.width,
                   child: ListView.builder(
-                      restorationId: 'alertCenterList',
-                      itemCount: finalList.length, itemBuilder: (BuildContext context, int index) {
-                        return finalList.isEmpty ? const Center(
-                              child: Text('No alerts in this category')) : EarlyWarningListElement(item: finalList[index]);
-                      },
-                      )),
+                    restorationId: 'alertCenterList',
+                    itemCount: finalList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return finalList.isEmpty
+                          ? const Center(
+                              child: Text('No alerts in this category'))
+                          : EarlyWarningListElement(item: finalList[index]);
+                    },
+                  )),
         ],
       ),
     );

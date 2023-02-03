@@ -1,6 +1,8 @@
 import 'package:decyfir/src/alert_center/alert_center_latest_alerts.dart';
 import 'package:decyfir/src/alert_center/alert_center_list.dart';
+import 'package:decyfir/src/authentication/reset_password.dart';
 import 'package:decyfir/src/common/constants.dart';
+import 'package:decyfir/src/faq.dart';
 import 'package:decyfir/src/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -90,6 +92,10 @@ class MyApp extends StatelessWidget {
                     return const AlertCenterLatestAlerts();
                   case Profile.routeName:
                     return const Profile();
+                  case FaqView.routeName:
+                    return const FaqView();
+                  case ResetPassword.routeName:
+                    return const ResetPassword();
                   default:
                     return const Login();
                 }

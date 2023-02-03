@@ -6,7 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class AlertCenterListElement extends StatefulWidget {
   final dynamic item;
 
-  const AlertCenterListElement({super.key, this.item});
+  const AlertCenterListElement({super.key, required this.item});
 
   @override
   State<AlertCenterListElement> createState() => _AlertCenterListElementState();
@@ -18,113 +18,153 @@ class _AlertCenterListElementState extends State<AlertCenterListElement> {
 
   @override
   Widget build(BuildContext context) {
-    String category = widget.item['subCategory'] != null ? widget.item['subCategory'].toUpperCase() : "";
+    String category = widget.item['subCategory'] != null
+        ? widget.item['subCategory'].toUpperCase()
+        : (widget.item['category'] != null
+            ? widget.item['category'].toUpperCase()
+            : widget.item['type']);
     String description = widget.item['description'] ?? '';
-    int countLines = (description != null && description.length > 50) ? description.length ~/ 50 : 1;
-    return GestureDetector(
-      onTap: (() => setState(() {
-        isExpanded = !isExpanded;
-        print(isExpanded ? '${widget.item['id']} Opened' : '${widget.item['id']} Closed');
-      })),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            constraints: const BoxConstraints(minHeight: 80),
-            margin: const EdgeInsets.fromLTRB(10, 3, 10, 0),
+    // int countLines = (description != null && description.length > 50) ? description.length ~/ 50 : 1;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          constraints: const BoxConstraints(minHeight: 80),
+          margin: const EdgeInsets.fromLTRB(10, 3, 10, 0),
+          decoration: BoxDecoration(
+              border: Border.all(width: 0.5, color: Colors.blueGrey.shade200)),
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(10, 2, 15, 3),
             decoration: BoxDecoration(
-                border: Border.all(width: 0.5, color: Colors.blueGrey.shade200)),
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(10, 2, 15, 3),
-              decoration: BoxDecoration(
-                  //color: Colors.white,
-                  gradient: LinearGradient(
-                      begin: Alignment.topRight,
-                      end: Alignment.bottomLeft,
-                      colors: [
-                        Colors.white,
-                        Colors.grey.shade100,
-                        Colors.white54,
-                        Colors.grey.shade100,
-                        Colors.white54
-                      ]),
-                  border: Border(
-                      left: BorderSide(
-                          color: Subroutines.getRiskColor(widget.item['riskScore']),
-                          width: 15))),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    //Design 3
-                    padding: const EdgeInsets.fromLTRB(0, 10, 15, 7),
-                    //Design 1
-                    //padding: EdgeInsets.fromLTRB(0, 5, 15, 7),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          //width: 100,
-                          //constraints: const BoxConstraints(maxWidth: 120),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(30),
-                            color: Colors.blueGrey,
-                          ),
-                          padding: const EdgeInsets.fromLTRB(7, 4, 7, 4),
-                          child: Text(category,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500)),
+                //color: Colors.white,
+                gradient: LinearGradient(
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                    colors: [
+                      Colors.white,
+                      Colors.grey.shade300,
+                      Colors.grey.shade100,
+                      Colors.grey.shade200,
+                      Colors.white
+                    ]),
+                border: Border(
+                    left: BorderSide(
+                        color:
+                            Subroutines.getRiskColor(widget.item['riskScore']),
+                        width: 15))),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  //Design 3
+                  padding: const EdgeInsets.fromLTRB(0, 10, 15, 7),
+                  //Design 1
+                  //padding: EdgeInsets.fromLTRB(0, 5, 15, 7),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        //width: 100,
+                        //constraints: const BoxConstraints(maxWidth: 120),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          color: Colors.blueGrey,
                         ),
-                        Text(
-                          Subroutines.getDate(widget.item['createdDate']),
-                          style: const TextStyle(color: Colors.black87),
-                        ),
-                      ],
-                    ),
+                        padding: const EdgeInsets.fromLTRB(7, 4, 7, 4),
+                        child: Text(category,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500)),
+                      ),
+                      Text(
+                        Subroutines.getDate(widget.item['createdDate']),
+                        style: const TextStyle(color: Colors.black87),
+                      ),
+                    ],
                   ),
-                  Container(
-                    //Design 3
-                    padding: const EdgeInsets.fromLTRB(0, 3, 15, 7),
-                    //Design 1
-                    //padding: const EdgeInsets.fromLTRB(0, 5, 15, 10),
-                    child: Text(widget.item['title'] ?? '',
-                        maxLines: 2,
-                        style: const TextStyle(
-                            color: Colors.black54, fontWeight: FontWeight.w500)),
-                  )
-                ],
-              ),
+                ),
+                Container(
+                  //Design 3
+                  padding: const EdgeInsets.fromLTRB(0, 3, 15, 7),
+                  //Design 1
+                  //padding: const EdgeInsets.fromLTRB(0, 5, 15, 10),
+                  child: Text(widget.item['title'] ?? '',
+                      maxLines: 2,
+                      style: const TextStyle(
+                          color: Colors.black54, fontWeight: FontWeight.w500)),
+                )
+              ],
             ),
           ),
-          AnimatedContainer(
-            margin: const EdgeInsets.fromLTRB(20, 0, 12, 3),
-            decoration: BoxDecoration(
-              color: Colors.white54
-            ),
-            height: isExpanded ? 30*countLines.toDouble() + 50 : 0,
-            duration: const Duration(milliseconds: 400),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                    
-                    child: Text(widget.item['category'])),
-                  SizedBox(
-                    height: 100,
-                    child: Html(data: description)),
-                ],
+        ),
+        Container(
+          margin: const EdgeInsets.fromLTRB(20, 0, 20, 4),
+          //padding: const EdgeInsets.fromLTRB(0, 2, 0, 0),
+          decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.elliptical(5, 10),
+                  bottomRight: Radius.elliptical(5, 10)),
+              color: Colors.grey.shade100),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            verticalDirection: VerticalDirection.up,
+            children: [
+              GestureDetector(
+                onTap: (() => setState(() {
+                      isExpanded = !isExpanded;
+                    })),
+                child: Container(
+                    alignment: Alignment.center,
+
+                    //height: 25,
+                    decoration: BoxDecoration(
+                      color: Colors.blueGrey.shade100,
+                      borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.elliptical(5, 10),
+                          bottomRight: Radius.elliptical(5, 10)),
+                    ),
+                    padding: const EdgeInsets.fromLTRB(10, 2, 10, 2),
+                    child: Text(
+                      isExpanded ? 'See Less' : 'See More',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(color: Color(0xFF37474F)),
+                    )),
               ),
-            ),
-          )
-        ],
-      ),
+              AnimatedContainer(
+                height: isExpanded ? 125 : 0,
+                duration: const Duration(milliseconds: 400),
+                child: Column(
+                  children: [
+                    Container(
+                        padding: const EdgeInsets.fromLTRB(10, 2, 10, 2),
+                        child: Text(
+                          widget.item['category'],
+                          style: const TextStyle(
+                              color: Color(0xFF37474F),
+                              fontWeight: FontWeight.w700),
+                        )),
+                    SingleChildScrollView(
+                        child: SizedBox(
+                            height: 100,
+                            child: Html(
+                              data: description,
+                              style: {
+                                "body": Style(
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.w300),
+                              },
+                            ))),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        )
+      ],
     );
 
     // ignore: dead_code
