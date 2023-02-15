@@ -140,7 +140,7 @@ class _DecyfirDrawerState extends State<DecyfirDrawer> {
           const Divider(thickness: 2),
           ListTile(
             onTap: (() => Navigator.restorablePushNamed(
-                context, ResetPassword.routeName)),
+                context, ResetPassword.routeName, arguments: true)),
             leading: Icon(Icons.restore_sharp,
                 color: Theme.of(context).colorScheme.primary, size: 34),
             title: Text('Reset Password',
@@ -168,7 +168,7 @@ class _DecyfirDrawerState extends State<DecyfirDrawer> {
           AboutListTile(
             applicationName: 'DeCYFIR',
             applicationVersion: 'Version 1',
-            applicationLegalese: 'CYFIRMA 2022, ALL RIGHTS ARE RESERVED',
+            applicationLegalese: 'CYFIRMA 2023, ALL RIGHTS ARE RESERVED',
             applicationIcon:
                 Image.asset('assets/images/appbar_logo.png', width: 50),
             icon: Icon(Icons.info_outline_rounded,

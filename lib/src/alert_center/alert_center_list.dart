@@ -129,12 +129,12 @@ class _AlertCenterListState extends State<AlertCenterList> {
                   height: MediaQuery.of(context).size.height - 300,
                   width: MediaQuery.of(context).size.width,
                   child: ListView.builder(
-                    restorationId: 'alertCenterList',
+                    restorationId: 'earlyWarningList',
                     itemCount: finalList.length,
                     itemBuilder: (BuildContext context, int index) {
                       return finalList.isEmpty
                           ? const Center(
-                              child: Text('No alerts in this category'))
+                              child: Text('No early warnings in this category'))
                           : EarlyWarningListElement(item: finalList[index]);
                     },
                   )),

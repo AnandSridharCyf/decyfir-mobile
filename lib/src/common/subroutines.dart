@@ -29,9 +29,7 @@ class Subroutines {
   static Future<http.Response> login(String username, String password,
       {token}) async {
     Map<String, String> payload = {"username": username, "password": password};
-    if (token == null) {
-      payload = {"username": username, "password": password};
-    } else {
+    if (token != null) {
       payload = {"username": username, "password": password, 'verificationCode': token};
     }
     Uri path = Uri.https(

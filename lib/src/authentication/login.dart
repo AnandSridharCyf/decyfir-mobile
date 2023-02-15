@@ -18,7 +18,6 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  bool _loading = false;
   final _scaffoldKey = GlobalKey<ScaffoldMessengerState>();
   final _loginKey = GlobalKey<FormState>();
   String _username = '', _password = '', _authToken = '';
@@ -264,13 +263,11 @@ class _LoginState extends State<Login> {
                                     onTap: () {
                                       FocusScope.of(context)
                                           .requestFocus(FocusNode());
-                                      if (!_loading) {
-                                        _loginKey.currentState?.save();
-                                        _performLoginWithoutToken(context);
-                                      }
+                                      _loginKey.currentState?.save();
+                                      _performLoginWithoutToken(context);
                                     },
                                     child: Opacity(
-                                      opacity: _loading ? .5 : 1,
+                                      opacity: 1,
                                       child: Container(
                                         height: 50,
                                         width: width / 1.12,
@@ -290,7 +287,7 @@ class _LoginState extends State<Login> {
                                   ),
                                   GestureDetector(
                                     onTap: (() => Navigator.restorablePushNamed(
-                                        context, ResetPassword.routeName)),
+                                        context, ResetPassword.routeName, arguments: true)),
                                     child: const Center(
                                       child: Padding(
                                         padding: EdgeInsets.all(8.0),

@@ -5,7 +5,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 class ResetPassword extends StatefulWidget {
   static const routeName = '/reset_password';
 
-  const ResetPassword({super.key});
+  final bool isInAppCall;
+
+  const ResetPassword({super.key, required this.isInAppCall});
 
   @override
   State<ResetPassword> createState() => _ResetPasswordState();
@@ -70,7 +72,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                     padding: const EdgeInsets.fromLTRB(80, 100, 80, 10),
                     decoration: const BoxDecoration(),
                     child: Text(
-                      'Forgot your password?',
+                      widget.isInAppCall ? 'Having issues with your current password?' : "Forgot your password?",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontSize: 30,

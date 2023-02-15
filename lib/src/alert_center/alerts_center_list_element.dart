@@ -5,16 +5,23 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class AlertCenterListElement extends StatefulWidget {
   final dynamic item;
+  final bool isExpanded;
 
-  const AlertCenterListElement({super.key, required this.item});
+  const AlertCenterListElement({super.key, required this.item, required this.isExpanded});
 
   @override
   State<AlertCenterListElement> createState() => _AlertCenterListElementState();
 }
 
 class _AlertCenterListElementState extends State<AlertCenterListElement> {
-  bool isExpanded = false;
   int descContainer = 70;
+  late bool isExpanded;
+
+  @override
+  void initState() {
+    isExpanded = widget.isExpanded;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -151,7 +158,7 @@ class _AlertCenterListElementState extends State<AlertCenterListElement> {
                         child: SizedBox(
                             height: 100,
                             child: Html(
-                              data: description,
+                              data: "$description...",
                               style: {
                                 "body": Style(
                                     color: Colors.black87,

@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:decyfir/src/settings/settings_controller.dart';
+import 'package:decyfir/src/settings/settings_service.dart';
 import 'package:decyfir/src/widgets/animated_logo.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -26,7 +28,10 @@ class _AlertCenterLatestAlertsListState
   List<bool> riskLevelActive = [true, false, false];
   List<int> riskLevelCounts = [0, 0, 0];
   String category = '', subCategory = '', apiAlias = '';
-  bool loading = true;
+  bool loading = true, isExpanded = false;
+
+  SettingsController settingsController = SettingsController(SettingsService());
+  
 
   @override
   void initState() {
@@ -89,7 +94,9 @@ class _AlertCenterLatestAlertsListState
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Text>[
                     Text('Dashboard',
-                        style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.secondary)),
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Theme.of(context).colorScheme.secondary)),
                     Text('Latest Alerts',
                         style: TextStyle(
                             fontSize: 22,
@@ -159,6 +166,7 @@ class _AlertCenterLatestAlertsListState
                   GestureDetector(
                       onTap: () => setState(() {
                             riskLevelActive[0] = !riskLevelActive[0];
+                            isExpanded = false;
                           }),
                       child: createRiskLevelChip('Critical', riskLevelActive[0],
                           riskLevelCounts[0], context)),
@@ -166,6 +174,7 @@ class _AlertCenterLatestAlertsListState
                   GestureDetector(
                       onTap: () => setState(() {
                             riskLevelActive[1] = !riskLevelActive[1];
+                            isExpanded = false;
                           }),
                       child: createRiskLevelChip('High', riskLevelActive[1],
                           riskLevelCounts[1], context)),
@@ -173,6 +182,7 @@ class _AlertCenterLatestAlertsListState
                   GestureDetector(
                       onTap: () => setState(() {
                             riskLevelActive[2] = !riskLevelActive[2];
+                            isExpanded = false;
                           }),
                       child: createRiskLevelChip('Medium', riskLevelActive[2],
                           riskLevelCounts[2], context))
@@ -190,25 +200,23 @@ class _AlertCenterLatestAlertsListState
                         width: loading ? 100 : 0,
                         child: const AnimatedLogo()),
                   ))
-              : SizedBox(
+              : Container(
+                  color: Colors.transparent,
                   height: MediaQuery.of(context).size.height - 295,
-                  child: SingleChildScrollView(
-                      child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (finalList.isEmpty)
-                        Center(
-                            child: Text(
-                          'No alerts in this category',
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.secondary),
-                        )),
-                      if (finalList.isNotEmpty)
-                        for (var item in finalList)
-                          AlertCenterListElement(item: item)
-                    ],
-                  )),
-                ),
+                  width: MediaQuery.of(context).size.width,
+                  child: ListView.builder(
+                    restorationId: 'alertCenterList',
+                    itemCount: finalList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return finalList.isEmpty
+                          ? const Center(
+                              child: Text('No alerts in this category'))
+                          : AlertCenterListElement(
+                              item: finalList[index],
+                              isExpanded: isExpanded,
+                            );
+                    },
+                  ))
         ],
       ),
     );
