@@ -89,7 +89,7 @@ class LoginView extends StatelessWidget {
                                     style:
                                         const TextStyle(color: Colors.blueGrey),
                                     onSaved: (value) =>
-                                        controller.setUsername = value.toString(),
+                                        controller.username = value.toString(),
                                   ),
                                   const SizedBox(height: 20),
                                   const Text('Password*',
@@ -111,7 +111,7 @@ class LoginView extends StatelessWidget {
                                     obscureText: true,
                                     style:
                                         const TextStyle(color: Colors.blueGrey),
-                                    onSaved: (value) => controller.setPassword = value.toString(),
+                                    onSaved: (value) => controller.password = value.toString(),
                                   ),
                                   const SizedBox(height: 10),
                                   GestureDetector(
