@@ -38,7 +38,7 @@ class SettingsView extends StatelessWidget {
           children: [
             Container(
               padding: const EdgeInsets.fromLTRB(16, 7, 16, 13),
-              child: Text(
+              child: const Text(
                 'Settings',
                 style: TextStyle(fontSize: 22, color: Colors.red),
               ),
@@ -46,7 +46,7 @@ class SettingsView extends StatelessWidget {
             Container(
               padding: const EdgeInsets.fromLTRB(16, 7, 16, 7),
               decoration: BoxDecoration(color: Theme.of(context).dividerColor),
-              child: Text('Choose the App Theme you like'),
+              child: const Text('Choose the App Theme you like'),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
@@ -74,7 +74,7 @@ class SettingsView extends StatelessWidget {
             Container(
               padding: const EdgeInsets.fromLTRB(16, 7, 16, 7),
               decoration: BoxDecoration(color: Theme.of(context).dividerColor),
-              child: Text('Select Risk levels to show'),
+              child: const Text('Select Risk levels to show'),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 3, 16, 3),

@@ -1,5 +1,6 @@
 import 'package:decyfir/src/alert_center/alert_center_latest_alerts.dart';
 import 'package:decyfir/src/alert_center/alert_center_list.dart';
+import 'package:decyfir/src/authentication/login_view.dart';
 import 'package:decyfir/src/authentication/reset_password.dart';
 import 'package:decyfir/src/common/constants.dart';
 import 'package:decyfir/src/faq.dart';
@@ -95,7 +96,7 @@ class MyApp extends StatelessWidget {
                   case FaqView.routeName:
                     return const FaqView();
                   case ResetPassword.routeName:
-                    return const ResetPassword();
+                    return const ResetPassword(isInAppCall: false);
                   default:
                     return const Login();
                 }
