@@ -3,19 +3,20 @@ import 'dart:convert';
 import 'package:decyfir/src/alert_center/early_warning_list_element.dart';
 import 'package:decyfir/src/common/shared_prefs_handler.dart';
 import 'package:decyfir/src/common/subroutines.dart';
+import 'package:decyfir/src/settings/settings_controller.dart';
 import 'package:decyfir/src/widgets/risk_widget.dart';
 import 'package:flutter/material.dart';
 
-class AlertCenterList extends StatefulWidget {
+class AlertCenterEarlyWarnings extends StatefulWidget {
   static const routeName = '/alert_center_list';
 
-  const AlertCenterList({super.key});
+  const AlertCenterEarlyWarnings({super.key, required SettingsController controller});
 
   @override
-  State<AlertCenterList> createState() => _AlertCenterListState();
+  State<AlertCenterEarlyWarnings> createState() => _AlertCenterEarlyWarningsState();
 }
 
-class _AlertCenterListState extends State<AlertCenterList> {
+class _AlertCenterEarlyWarningsState extends State<AlertCenterEarlyWarnings> {
   bool loading = true;
   List finalList = [], earlyWarningsData = [];
   List<String> riskLevelsSelected = ["Critical", "High", "Medium"];
@@ -124,7 +125,10 @@ class _AlertCenterListState extends State<AlertCenterList> {
                     color: Colors.black,
                   )),
                 )
-              : Container(
+              : finalList.isEmpty
+                          ? const Center(
+                              child: Text('No early warnings in this category'))
+                          : Container(
                   color: Colors.transparent,
                   height: MediaQuery.of(context).size.height - 300,
                   width: MediaQuery.of(context).size.width,
@@ -132,10 +136,7 @@ class _AlertCenterListState extends State<AlertCenterList> {
                     restorationId: 'earlyWarningList',
                     itemCount: finalList.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return finalList.isEmpty
-                          ? const Center(
-                              child: Text('No early warnings in this category'))
-                          : EarlyWarningListElement(item: finalList[index]);
+                      return EarlyWarningListElement(item: finalList[index]);
                     },
                   )),
         ],

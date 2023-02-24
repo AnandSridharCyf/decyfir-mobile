@@ -1,6 +1,5 @@
-import 'package:decyfir/src/alert_center/alert_center_latest_alerts.dart';
-import 'package:decyfir/src/alert_center/alert_center_list.dart';
-import 'package:decyfir/src/authentication/login_view.dart';
+import 'package:decyfir/src/alert_center/alert_center_latest_alerts_list.dart';
+import 'package:decyfir/src/alert_center/alert_center_early_warnings.dart';
 import 'package:decyfir/src/authentication/reset_password.dart';
 import 'package:decyfir/src/common/constants.dart';
 import 'package:decyfir/src/faq.dart';
@@ -67,6 +66,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             useMaterial3: true,
             colorScheme: Constants.lightScheme,
+            typography: Typography.material2021(platform: TargetPlatform.android)
             //primaryColor: const Color(0xFF37474F)
           ),
           darkTheme: ThemeData(colorScheme: Constants.darkScheme),
@@ -84,13 +84,13 @@ class MyApp extends StatelessWidget {
                   case AlertCenterDetailsView.routeName:
                     return const AlertCenterDetailsView();
                   case AlertCenter.routeName:
-                    return const AlertCenter(username: '');
+                    return AlertCenter(username: '', controller: settingsController);
                   case Login.routeName:
-                    return const Login();
-                  case AlertCenterList.routeName:
-                    return const AlertCenterList();
+                    return Login(controller: settingsController);
+                  case AlertCenterEarlyWarnings.routeName:
+                    return AlertCenterEarlyWarnings(controller: settingsController);
                   case AlertCenterLatestAlerts.routeName:
-                    return const AlertCenterLatestAlerts();
+                    return AlertCenterLatestAlerts(controller: settingsController);
                   case Profile.routeName:
                     return const Profile();
                   case FaqView.routeName:
@@ -98,7 +98,7 @@ class MyApp extends StatelessWidget {
                   case ResetPassword.routeName:
                     return const ResetPassword(isInAppCall: false);
                   default:
-                    return const Login();
+                    return Login(controller: settingsController);
                 }
               },
             );

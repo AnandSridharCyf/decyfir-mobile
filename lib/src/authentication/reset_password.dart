@@ -99,6 +99,8 @@ class _ResetPasswordState extends State<ResetPassword> {
                         Container(
                           margin: const EdgeInsets.all(40),
                           child: TextFormField(
+                            autovalidateMode: AutovalidateMode.always,
+                            validator: Subroutines.validateEmail,
                             onSaved: (newValue) => setState(() {
                               _email = newValue.toString();
                             }),

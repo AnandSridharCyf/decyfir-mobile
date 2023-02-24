@@ -1,18 +1,20 @@
 import 'dart:convert';
 
 import 'package:decyfir/src/alert_center/alert_center_latest_alerts_list.dart';
-import 'package:decyfir/src/alert_center/alert_center_list.dart';
+import 'package:decyfir/src/alert_center/alert_center_early_warnings.dart';
 import 'package:decyfir/src/common/decyfir_drawer.dart';
 import 'package:decyfir/src/common/shared_prefs_handler.dart';
 import 'package:decyfir/src/common/subroutines.dart';
+import 'package:decyfir/src/settings/settings_controller.dart';
 import 'package:decyfir/src/widgets/animated_logo.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class AlertCenter extends StatefulWidget {
   final String username;
+  final SettingsController controller;
 
-  const AlertCenter({super.key, required this.username});
+  const AlertCenter({super.key, required this.username, required this.controller});
 
   static const routeName = '/alert_center';
 
@@ -33,9 +35,9 @@ class _AlertCenterState extends State<AlertCenter> {
   Widget _populatePage(int index) {
     if (!_loading) {
       if (index == 0) {
-        return const AlertCenterLatestAlertsList();
+        return AlertCenterLatestAlerts(controller: widget.controller);
       } else {
-        return const AlertCenterList();
+        return AlertCenterEarlyWarnings(controller: widget.controller);
       }
     } else {
       return const Center(

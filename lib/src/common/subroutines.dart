@@ -30,7 +30,11 @@ class Subroutines {
       {token}) async {
     Map<String, String> payload = {"username": username, "password": password};
     if (token != null) {
-      payload = {"username": username, "password": password, 'verificationCode': token};
+      payload = {
+        "username": username,
+        "password": password,
+        'verificationCode': token
+      };
     }
     Uri path = Uri.https(
         Values.PREFIXES[Values.CURRENT_BUILD] + _returnBaseUrl(),
@@ -44,7 +48,7 @@ class Subroutines {
             },
             body: jsonEncode(payload))
         .catchError((onError) {
-        print(onError.toString());
+      print(onError.toString());
     });
   }
 
@@ -62,7 +66,7 @@ class Subroutines {
             body: email)
         .catchError((onError) {
       //print(onError.toString());
-    }).then((http.Response res){
+    }).then((http.Response res) {
       return res;
     });
   }
@@ -127,10 +131,11 @@ class Subroutines {
       "sort": "createdDate,$sortDir",
       "riskScores": "5,6,7,8,9,10,"
     };
-    if(alertType != '') payload['alertType'] = alertType;
+    if (alertType != '') payload['alertType'] = alertType;
     Uri path = Uri.https(
         Values.PREFIXES[Values.CURRENT_BUILD] + _returnBaseUrl(),
-        buildUrl(Values.API_PATHS['latest_alerts'].toString()), payload);
+        buildUrl(Values.API_PATHS['latest_alerts'].toString()),
+        payload);
     return _getCall(token, path);
   }
 
@@ -178,7 +183,7 @@ class Subroutines {
             body: jsonEncode(payload))
         .catchError((onError) {
       //print(onError.toString());
-    }).then((http.Response res){
+    }).then((http.Response res) {
       return res;
     });
   }
@@ -369,6 +374,21 @@ class Subroutines {
     return '$monthStr $day, $year $hrStr:$min $addStr';
   }
 
+  static String? validateEmail(String? value) {
+    const pattern = r"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'"
+        r'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-'
+        r'\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*'
+        r'[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4]'
+        r'[0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9]'
+        r'[0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\'
+        r'x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])';
+    final regex = RegExp(pattern);
+
+    return value!.isNotEmpty && !regex.hasMatch(value)
+        ? 'Enter a valid email address'
+        : null;
+  }
+
   static void getNotification(FlutterLocalNotificationsPlugin plugin) async {
     SharedPreferencesHandler()
         .getString('authToken')
@@ -484,7 +504,7 @@ class Values {
     "version": "app-versions/platform",
     "account": "account",
     "login": "authenticate",
-    "reset_password" : "account/reset-password/init",
+    "reset_password": "account/reset-password/init",
     "online_report_list": "online-reports/dasboard/list",
     "latest_alerts": "alerts/v2/listing",
     "org_user_data": "org-users/loginId"

@@ -6,11 +6,15 @@ import 'package:decyfir/src/authentication/reset_password.dart';
 import 'package:decyfir/src/common/notification_setup.dart';
 import 'package:decyfir/src/common/shared_prefs_handler.dart';
 import 'package:decyfir/src/common/subroutines.dart';
+import 'package:decyfir/src/settings/settings_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 
 class Login extends StatefulWidget {
-  const Login({super.key});
+  final SettingsController controller;
+  
+  const Login({super.key, required this.controller});
+
   static const routeName = '/login';
 
   @override
@@ -19,7 +23,7 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final _scaffoldKey = GlobalKey<ScaffoldMessengerState>();
-  final _loginKey = GlobalKey<FormState>();
+  final _loginKey = GlobalKey<FormState>(), _tokenKey = GlobalKey<FormState>();
   String _username = '', _password = '', _authToken = '';
 
   @override
@@ -33,7 +37,7 @@ class _LoginState extends State<Login> {
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) => AlertCenter(username: _username)));
+                builder: (context) => AlertCenter(username: _username, controller: widget.controller,)));
       }
     });
   }
@@ -43,7 +47,6 @@ class _LoginState extends State<Login> {
         await Subroutines.login(_username, _password, token: _authToken);
     switch (response.statusCode) {
       case 200:
-        //final res = json.decode(response.body);
         SharedPreferencesHandler()
             .setString('authToken', json.decode(response.body)['id_token'])
             .then((value) async {
@@ -52,20 +55,19 @@ class _LoginState extends State<Login> {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                  builder: (context) => AlertCenter(username: _username)));
+                  builder: (context) => AlertCenter(username: _username, controller: widget.controller)));
         });
         break;
+      case 401:
+        print(response.reasonPhrase);
+        print("Incorrect password or token");
+        break;
+      case 403:
+        print(response.reasonPhrase);
+        print("Invalid token");
+        break;
       default:
-        //final res = json.decode(response.body);
-        if (response.statusCode == 401) {
-          if (json.decode(response.body) != null) {
-            if (json.decode(response.body)['detail'].contains('not activated'))
-              print('Not activated account');
-          } else {
-            _scaffoldKey.currentState?.showSnackBar(const SnackBar(
-                content: Text('Email Id or Password incorrect')));
-          }
-        }
+        print('${response.statusCode} : ${response.reasonPhrase}');
     }
   }
 
@@ -76,8 +78,16 @@ class _LoginState extends State<Login> {
         case 200:
           _storeAuthAndTransit(value);
           break;
-        default:
+        case 403:
+          print(value.reasonPhrase);
           requestAuthenticatorToken();
+          break;
+        case 401:
+          print(value.reasonPhrase);
+          print("Incorrect password");
+          break;
+        default:
+          print(value.reasonPhrase);          
       }
     });
   }
@@ -87,55 +97,58 @@ class _LoginState extends State<Login> {
         context: context,
         isScrollControlled: true,
         builder: (context) {
-          return Container(
-            padding: MediaQuery.of(context).viewInsets,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
-                  child: Text('Enter your authentication token',
-                      style:
-                          TextStyle(fontSize: 14, fontWeight: FontWeight.w400)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        //width: width * 0.7,
-                        child: TextFormField(
-                          onSaved: (value) {
-                            setState(() {
-                              _authToken = value.toString();
-                            });
-                          },
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          FocusScope.of(context).requestFocus(FocusNode());
-                          print('Auth version got called');
-                          _loginKey.currentState?.save();
-                          _performLoginWithToken(context);
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.only(left: 10),
-                          decoration: BoxDecoration(
-                              color: const Color(0xFF7F56D9),
-                              borderRadius: BorderRadius.circular(20)),
-                          padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-                          child: const Text('Submit',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w300)),
-                        ),
-                      )
-                    ],
+          return Form(
+            key: _tokenKey,
+            child: Container(
+              padding: MediaQuery.of(context).viewInsets,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
+                    child: Text('Enter your authentication token',
+                        style:
+                            TextStyle(fontSize: 14, fontWeight: FontWeight.w400)),
                   ),
-                )
-              ],
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          //width: width * 0.7,
+                          child: TextFormField(
+                            onSaved: (value) {
+                              setState(() {
+                                _authToken = value.toString();
+                              });
+                            },
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            FocusScope.of(context).requestFocus(FocusNode());
+                            print('Auth version got called');
+                            _tokenKey.currentState?.save();
+                            _performLoginWithToken(context);
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.only(left: 10),
+                            decoration: BoxDecoration(
+                                color: const Color(0xFF7F56D9),
+                                borderRadius: BorderRadius.circular(20)),
+                            padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                            child: const Text('Submit',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w300)),
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           );
         });
@@ -152,7 +165,7 @@ class _LoginState extends State<Login> {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => AlertCenter(username: _username)));
+              builder: (context) => AlertCenter(username: _username, controller: widget.controller,)));
     });
   }
 
@@ -232,6 +245,8 @@ class _LoginState extends State<Login> {
                                                 color: Colors.blueGrey))),
                                     style:
                                         const TextStyle(color: Colors.blueGrey),
+                                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                                    validator: Subroutines.validateEmail,
                                     onSaved: (value) =>
                                         _username = value.toString(),
                                   ),

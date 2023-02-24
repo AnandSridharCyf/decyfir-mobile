@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:decyfir/src/settings/settings_controller.dart';
-import 'package:decyfir/src/settings/settings_service.dart';
 import 'package:decyfir/src/widgets/animated_logo.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -11,31 +10,34 @@ import 'package:decyfir/src/common/subroutines.dart';
 import 'package:decyfir/src/widgets/filter_modal.dart';
 import 'package:decyfir/src/widgets/risk_widget.dart';
 
-class AlertCenterLatestAlertsList extends StatefulWidget {
+class AlertCenterLatestAlerts extends StatefulWidget {
   final String? data;
+  final SettingsController controller;
 
-  const AlertCenterLatestAlertsList({super.key, this.data});
+  static const routeName = '/alert_center_latest_alerts';
+
+  const AlertCenterLatestAlerts({super.key, this.data, required this.controller});
 
   @override
-  State<AlertCenterLatestAlertsList> createState() =>
-      _AlertCenterLatestAlertsListState();
+  State<AlertCenterLatestAlerts> createState() =>
+      _AlertCenterLatestAlertsList();
 }
 
-class _AlertCenterLatestAlertsListState
-    extends State<AlertCenterLatestAlertsList> {
+class _AlertCenterLatestAlertsList
+    extends State<AlertCenterLatestAlerts> {
   List finalList = [], _alertsData = [];
   List<String> riskLevelsSelected = ["Critical", "High", "Medium"];
   List<bool> riskLevelActive = [true, false, false];
   List<int> riskLevelCounts = [0, 0, 0];
   String category = '', subCategory = '', apiAlias = '';
   bool loading = true, isExpanded = false;
-
-  SettingsController settingsController = SettingsController(SettingsService());
+  late List<bool> tempBools;
   
 
   @override
   void initState() {
     super.initState();
+    tempBools = widget.controller.riskLevelActive;
     SharedPreferencesHandler()
         .getString('authToken')
         .then((value) => _getLatestAlerts(value));
@@ -78,6 +80,7 @@ class _AlertCenterLatestAlertsListState
   @override
   Widget build(BuildContext context) {
     finalList = updateList(Subroutines.filterChosen(_alertsData));
+    print(tempBools);
     riskLevelCounts = Subroutines.generateCounts(_alertsData);
     return Container(
       decoration:
@@ -106,29 +109,6 @@ class _AlertCenterLatestAlertsListState
                 ),
                 Row(
                   children: [
-                    /*GestureDetector(
-                      onTap: (() => showModalBottomSheet(context: context, builder: (context) {
-                        return Wrap(
-                          children: [
-                            GestureDetector(
-                              onTap: () => {
-                                
-                              },
-                              child: const ListTile(
-                                leading: Icon(FontAwesomeIcons.section),
-                                title: Text('Sort by Category'),
-                              ),
-                            ),
-                            
-                            const ListTile(
-                              leading: Icon(Icons.copy),
-                              title: Text('Sort by Date'),
-                            ),
-                          ],
-                        );
-                      })),
-                      child: const Icon(FontAwesomeIcons.sort, size: 30),
-                    ),*/
                     const SizedBox(width: 10),
                     GestureDetector(
                       onTap: (() => showModalBottomSheet(
@@ -200,7 +180,10 @@ class _AlertCenterLatestAlertsListState
                         width: loading ? 100 : 0,
                         child: const AnimatedLogo()),
                   ))
-              : Container(
+              : finalList.isEmpty
+                          ? const Center(
+                              child: Text('No alerts in this category'))
+                          : Container(
                   color: Colors.transparent,
                   height: MediaQuery.of(context).size.height - 295,
                   width: MediaQuery.of(context).size.width,
@@ -208,10 +191,7 @@ class _AlertCenterLatestAlertsListState
                     restorationId: 'alertCenterList',
                     itemCount: finalList.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return finalList.isEmpty
-                          ? const Center(
-                              child: Text('No alerts in this category'))
-                          : AlertCenterListElement(
+                      return AlertCenterListElement(
                               item: finalList[index],
                               isExpanded: isExpanded,
                             );
