@@ -140,7 +140,8 @@ class _DecyfirDrawerState extends State<DecyfirDrawer> {
           const Divider(thickness: 2),
           ListTile(
             onTap: (() => Navigator.restorablePushNamed(
-                context, ResetPassword.routeName, arguments: true)),
+                context, ResetPassword.routeName,
+                arguments: true)),
             leading: Icon(Icons.restore_sharp,
                 color: Theme.of(context).colorScheme.primary, size: 34),
             title: Text('Reset Password',
@@ -163,17 +164,52 @@ class _DecyfirDrawerState extends State<DecyfirDrawer> {
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Theme.of(context).colorScheme.primary)),
+            subtitle: const Text('End your session securely'),
             //subtitle: const Text('Troubleshoot your issues'),
           ),
-          AboutListTile(
+          ListTile(
+            onTap: (() {
+              showGeneralDialog(
+                  context: context,
+                  //barrierColor: Colors.black38,
+                  transitionDuration: const Duration(milliseconds: 500),
+                  pageBuilder: (context, animation, animation2) {
+                    return SimpleDialog(
+                      title: const Text('About DeCYFIR'),
+                      titlePadding: const EdgeInsets.fromLTRB(20, 12, 20, 5),
+                      contentPadding: const EdgeInsets.fromLTRB(20, 5, 20, 12),
+                      titleTextStyle: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Theme.of(context).colorScheme.primary),
+                      children: const <Widget> [
+                        Text('Version 1'),
+                        Text('CYFIRMA 2023, ALL RIGHTS ARE RESERVED')
+                      ],
+                    );
+                  });
+            }),
+            leading: Icon(Icons.info_outline_rounded,
+                color: Theme.of(context).colorScheme.primary, size: 34),
+            title: Text('About DeCYFIR',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).colorScheme.primary)),
+          ),
+          /*AboutListTile(
             applicationName: 'DeCYFIR',
             applicationVersion: 'Version 1',
             applicationLegalese: 'CYFIRMA 2023, ALL RIGHTS ARE RESERVED',
+            dense: true,
+            aboutBoxChildren: [
+
+            ],
             applicationIcon:
                 Image.asset('assets/images/appbar_logo.png', width: 50),
             icon: Icon(Icons.info_outline_rounded,
                 color: Theme.of(context).colorScheme.primary, size: 34),
-          )
+          )*/
           // const Chip(
           //   avatar: CircleAvatar(
           //     backgroundColor: Colors.grey,

@@ -145,7 +145,7 @@ class _ProfileState extends State<Profile> {
               children: [
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height - 235,
+                  height: MediaQuery.of(context).size.height - 237,
                   //color: Color(0xFFED1F24),
                   //decoration: BoxDecoration(color: Colors.amber.shade50),
                 ),

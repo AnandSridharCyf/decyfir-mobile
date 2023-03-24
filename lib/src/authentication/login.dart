@@ -12,7 +12,7 @@ import 'package:local_auth/local_auth.dart';
 
 class Login extends StatefulWidget {
   final SettingsController controller;
-  
+
   const Login({super.key, required this.controller});
 
   static const routeName = '/login';
@@ -30,14 +30,57 @@ class _LoginState extends State<Login> {
   void initState() {
     super.initState();
     SharedPreferencesHandler().getString('authToken').then((value) async {
-      if (value != '') {
-        Subroutines.getNotification(
-            await NotificationSetup.getNotificationPlugin());
-        // ignore: use_build_context_synchronously
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => AlertCenter(username: _username, controller: widget.controller,)));
+      if (value.isNotEmpty) {
+        Subroutines.getAccountData(value).then((value) async {
+          if (value.statusCode == 200) {
+            Subroutines.getNotification(
+                await NotificationSetup.getNotificationPlugin());
+            // ignore: use_build_context_synchronously
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AlertCenter(
+                          username: _username,
+                          controller: widget.controller,
+                        )));
+          } else {
+            String username =
+                await SharedPreferencesHandler().getString('username');
+            String password =
+                await SharedPreferencesHandler().getString('password');
+            Subroutines.login(username, password).then((loginResp) async {
+              switch (loginResp.statusCode) {
+                case 200:
+                  SharedPreferencesHandler().setString(
+                      'authToken', json.decode(loginResp.body)['id_token']);
+                  Subroutines.getNotification(
+                      await NotificationSetup.getNotificationPlugin());
+                  // ignore: use_build_context_synchronously
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AlertCenter(
+                                username: username,
+                                controller: widget.controller,
+                              )));
+                  break;
+                case 401:
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Login(controller: widget.controller)));
+                  break;
+                case 403:
+                Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Login(controller: widget.controller)));
+                  break;
+                default:
+              }
+            });
+          }
+        });
       }
     });
   }
@@ -55,7 +98,8 @@ class _LoginState extends State<Login> {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                  builder: (context) => AlertCenter(username: _username, controller: widget.controller)));
+                  builder: (context) => AlertCenter(
+                      username: _username, controller: widget.controller)));
         });
         break;
       case 401:
@@ -87,7 +131,7 @@ class _LoginState extends State<Login> {
           print("Incorrect password");
           break;
         default:
-          print(value.reasonPhrase);          
+          print(value.reasonPhrase);
       }
     });
   }
@@ -108,8 +152,8 @@ class _LoginState extends State<Login> {
                   const Padding(
                     padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
                     child: Text('Enter your authentication token',
-                        style:
-                            TextStyle(fontSize: 14, fontWeight: FontWeight.w400)),
+                        style: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.w400)),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
@@ -156,6 +200,7 @@ class _LoginState extends State<Login> {
 
   void _storeAuthAndTransit(dynamic response) {
     SharedPreferencesHandler().setString('username', _username);
+    SharedPreferencesHandler().setString('password', _password);
     SharedPreferencesHandler()
         .setString('authToken', json.decode(response.body)['id_token'])
         .then((value) async {
@@ -165,7 +210,10 @@ class _LoginState extends State<Login> {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => AlertCenter(username: _username, controller: widget.controller,)));
+              builder: (context) => AlertCenter(
+                    username: _username,
+                    controller: widget.controller,
+                  )));
     });
   }
 
@@ -245,7 +293,8 @@ class _LoginState extends State<Login> {
                                                 color: Colors.blueGrey))),
                                     style:
                                         const TextStyle(color: Colors.blueGrey),
-                                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                                    autovalidateMode:
+                                        AutovalidateMode.onUserInteraction,
                                     validator: Subroutines.validateEmail,
                                     onSaved: (value) =>
                                         _username = value.toString(),
@@ -302,7 +351,8 @@ class _LoginState extends State<Login> {
                                   ),
                                   GestureDetector(
                                     onTap: (() => Navigator.restorablePushNamed(
-                                        context, ResetPassword.routeName, arguments: true)),
+                                        context, ResetPassword.routeName,
+                                        arguments: true)),
                                     child: const Center(
                                       child: Padding(
                                         padding: EdgeInsets.all(8.0),

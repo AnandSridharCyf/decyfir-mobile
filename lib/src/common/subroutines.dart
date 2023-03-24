@@ -71,8 +71,7 @@ class Subroutines {
     });
   }
 
-  //qadecyfir.cyfirma.com/api/account - Not Used
-
+  //qadecyfir.cyfirma.com/api/account
   static Future<http.Response> getAccountData(String token) async {
     Uri path = Uri.https(
         Values.PREFIXES[Values.CURRENT_BUILD] + _returnBaseUrl(),
@@ -418,7 +417,7 @@ class Subroutines {
                       if (e['riskScore'] > 8) alerts.add(e);
                     }
                   }
-                  alertsResp =
+                  /*alertsResp =
                       await Subroutines.getEarlyWarningForNotifications(
                           token, userData['orgId'].toString());
                   if (alertsResp.statusCode == 200) {
@@ -426,7 +425,7 @@ class Subroutines {
                     for (var e in alertsData) {
                       if (e['riskScore'] > 8) alerts.add(e);
                     }
-                  }
+                  }*/
                   if (alerts.isNotEmpty) {
                     int index = 0;
                     for (var e in alerts) {

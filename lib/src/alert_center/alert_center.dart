@@ -14,7 +14,8 @@ class AlertCenter extends StatefulWidget {
   final String username;
   final SettingsController controller;
 
-  const AlertCenter({super.key, required this.username, required this.controller});
+  const AlertCenter(
+      {super.key, required this.username, required this.controller});
 
   static const routeName = '/alert_center';
 
@@ -25,6 +26,7 @@ class AlertCenter extends StatefulWidget {
 class _AlertCenterState extends State<AlertCenter> {
   int _selectedAlertPage = 0;
   bool _loading = true;
+  String username = '';
 
   void _onAlertPageSelected(int index) {
     setState(() {
@@ -46,41 +48,67 @@ class _AlertCenterState extends State<AlertCenter> {
     }
   }
 
+  void getOrgUserData(token) async {
+    SharedPreferencesHandler().getString('username').then((value) async {
+      var response = await Subroutines.getOrgUserData(token, value);
+      switch (response.statusCode) {
+        case 200:
+          var userData = json.decode(response.body);
+          if (userData != null) {
+            SharedPreferencesHandler()
+                .setString('orgId', userData['orgId'].toString());
+            SharedPreferencesHandler()
+                .setString('orgName', userData['orgName']);
+            SharedPreferencesHandler().setString('email', userData['email']);
+            SharedPreferencesHandler()
+                .setString('firstName', userData['firstname']);
+            SharedPreferencesHandler()
+                .setString('lastName', userData['lastname']);
+            SharedPreferencesHandler()
+                .setString('timeZone', userData['timeZone']);
+            SharedPreferencesHandler().setString('phone', userData['phone']);
+            SharedPreferencesHandler()
+                .setString('createdDate', userData['createddate']);
+          }
+          setState(() {
+            _loading = false;
+          });
+          break;
+        default:
+      }
+    });
+  }
+
   void queryAndSaveAccountData() async {
     SharedPreferencesHandler().getString('authToken').then((token) async {
       if (token != '') {
-        SharedPreferencesHandler().getString('username').then((value) async {
-          if (value != null) {
-            var response = await Subroutines.getOrgUserData(token, value);
-            switch (response.statusCode) {
-              case 200:
-                var userData = json.decode(response.body);
-                if (userData != null) {
-                  SharedPreferencesHandler()
-                      .setString('orgId', userData['orgId'].toString());
-                  SharedPreferencesHandler()
-                      .setString('orgName', userData['orgName']);
-                      SharedPreferencesHandler()
-                      .setString('email', userData['email']);
-                  SharedPreferencesHandler()
-                      .setString('firstName', userData['firstname']);
-                  SharedPreferencesHandler()
-                      .setString('lastName', userData['lastname']);
-                  SharedPreferencesHandler()
-                      .setString('timeZone', userData['timeZone']);
-                  SharedPreferencesHandler()
-                      .setString('phone', userData['phone']);
-                  SharedPreferencesHandler()
-                      .setString('createdDate', userData['createddate']);
-                }
-                setState(() {
-                  _loading = false;
-                });
-                break;
-              default:
-            }
+        var response = await Subroutines.getAccountData(token);
+        if (response.statusCode == 200) {
+          getOrgUserData(token);
+        } else {
+          String username =
+              await SharedPreferencesHandler().getString('username');
+          String password =
+              await SharedPreferencesHandler().getString('password');
+          var loginResponse = await Subroutines.login(username, password);
+          switch (loginResponse.statusCode) {
+            case 200:
+              String freshToken = json.decode(response.body)['id_token'];
+              SharedPreferencesHandler().setString('authToken', freshToken);
+              getOrgUserData(freshToken);
+              break;
+            case 401:
+              print(response.reasonPhrase);
+              print("Incorrect password or token");
+              break;
+            case 403:
+              print(response.reasonPhrase);
+              print("Invalid token");
+              break;
+            default:
+              print('${response.statusCode} : ${response.reasonPhrase}');
           }
-        });
+        }
       }
     });
   }
@@ -155,7 +183,8 @@ class _AlertCenterState extends State<AlertCenter> {
                 onTap: _onAlertPageSelected,
                 items: const <BottomNavigationBarItem>[
                   BottomNavigationBarItem(
-                      icon: Icon(FontAwesomeIcons.bell), label: 'Latest Alerts'),
+                      icon: Icon(FontAwesomeIcons.bell),
+                      label: 'Latest Alerts'),
                   BottomNavigationBarItem(
                       icon: Icon(FontAwesomeIcons.circleExclamation),
                       label: 'Early Warnings')
